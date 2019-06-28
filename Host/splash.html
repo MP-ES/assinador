@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <style>
+      html {
+        color: #2f3640;
+        background-color: #f5f6fa;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+          "Helvetica Neue", sans-serif;
+      }
+
+      #main {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      #title {
+        text-align: center;
+      }
+
+      #loading {
+        width: 8em;
+        height: 8em;
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        justify-items: center;
+        align-items: center;
+        margin: 0 auto;
+      }
+
+      #loading > div {
+        width: 1.5em;
+        height: 1.5em;
+        background-color: #3d4d68;
+        border-radius: 50%;
+        animation: fade 1.5s alternate ease-in-out infinite;
+      }
+
+      #loading > div:nth-of-type(2),
+      #loading > div:nth-of-type(4) {
+        animation-delay: 0.25s;
+      }
+
+      #loading > div:nth-of-type(3),
+      #loading > div:nth-of-type(5),
+      #loading > div:nth-of-type(7) {
+        animation-delay: 0.5s;
+      }
+
+      #loading > div:nth-of-type(6),
+      #loading > div:nth-of-type(8) {
+        animation-delay: 0.75s;
+      }
+
+      #loading > div:nth-of-type(9) {
+        animation-delay: 1s;
+      }
+
+      @keyframes fade {
+        to {
+          opacity: 0.2;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      <div id="loading">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+
+      <h1 id="title">
+        Carregando
+      </h1>
+    </div>
+  </body>
+</html>
