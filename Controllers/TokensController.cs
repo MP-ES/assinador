@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Mvc;
 using Pkcs7lib;
 
@@ -8,18 +10,19 @@ namespace Assinador.Controllers
     [Route("api/tokens")]
     public class TokensController : Controller
     {
-        static IReadOnlyList<string> _libraries =
-            new string[] {
-                "Lib/aetpkss1.dll",
-                "Lib/eps2003csp11.dll",
-                "Lib/eToken.dll"
-            };
+        static OSPlatform _plataform =
+            RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
+            OSPlatform.Linux :
+            RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ?
+            OSPlatform.OSX : OSPlatform.Windows;
 
         [HttpGet]
         public IEnumerable<Token> Get()
         {
+            var libraries =
+                Directory.GetFiles($"Lib/{_plataform.ToString().ToLower()}/");
             var tokens = new List<Token>();
-            foreach (var library in _libraries)
+            foreach (var library in libraries)
             {
                 var explorer = new Pkcs11Explorer(library);
                 var libTokens = explorer.GetTokens();

@@ -1,8 +1,8 @@
 const { series, src, dest } = require('gulp');
 const uglify = require('gulp-uglify-es').default;
-const rename = require('gulp-rename');
 const del = require('del');
-const { exec } = require('child_process');
+
+const dest_folder = 'dist/';
 
 const minify = () => {
     const options = {
@@ -20,41 +20,24 @@ const minify = () => {
         },
         nameCache: {}
     };
-    return src(['*.js', '!gulpfile.js', '!uglify.js', '!build*.js'])
+    return src(['*.js', '!gulpfile.js', '!build*.js'])
         .pipe(uglify(options))
-        .pipe(dest('dist/'));
+        .pipe(dest(dest_folder));
 };
 
 const copy_assets = () => {
-    return src(['*.html', 'icon.*', 'bin']).pipe(dest('dist/'));
-};
-
-const package = () => {
-    return src(['package.prod.json'])
-        .pipe(rename('package.json'))
-        .pipe(dest('dist/'));
+    return src([
+        '*.html',
+        'icon.*',
+        '*.yml',
+        'Dockerfile',
+        '.dockerignore',
+        'bin'
+    ]).pipe(dest(dest_folder));
 };
 
 const clean = () => {
-    return del(['dist/**']);
+    return del([`${dest_folder}**`]);
 };
 
-const pack = cb => {
-    const options = { cwd: 'dist' };
-    exec('npm run pack', options, (err, stdout, stderr) => {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-};
-
-const publish = cb => {
-    const options = { cwd: 'dist' };
-    exec('npm run publish', options, (err, stdout, stderr) => {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-};
-
-exports.default = series(clean, minify, copy_assets, package, publish);
+exports.default = series(clean, minify, copy_assets);

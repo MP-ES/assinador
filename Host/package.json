@@ -4,6 +4,8 @@
     "description": "Assinador de Documentos do MPES",
     "main": "main.js",
     "scripts": {
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder --win -p always",
         "prebuild": "node build_dotnet.js --path=bin",
         "build": "gulp",
         "prestart": "node build_dotnet.js --path=bin",
@@ -22,7 +24,6 @@
         "electron-builder": "^20.40.2",
         "electron-packager": "^13.1.1",
         "gulp": "^4.0.2",
-        "gulp-rename": "^1.4.0",
         "gulp-uglify-es": "^1.0.4",
         "minimist": "^1.2.0"
     },
