@@ -1,18 +1,16 @@
 appId: "br.mp.mpes.assinador"
 productName: "Assinador MPES"
 compression: "maximum"
-files: ["icon.*", "*.js", "*.html", "bin"]
-extraResources: ["bin"]
 directories:
-  output: "dist"
+  output: "installer"
 publish:
   provider: "generic"
-  url: "http://127.0.0.1:19000/"
+  url: "https://assinador.mpes.mp.br/"
 protocols:
   name: "Assinador MPES"
   schemes: ["assinador-mpes"]
 nsis:
-  installerIcon: "icon.ico"
+  installerIcon: "static/icon.ico"
   oneClick: true
   runAfterFinish: true
   language: "1046"
@@ -21,4 +19,12 @@ nsis:
   createDesktopShortcut: true
 win:
   target: "nsis"
-  icon: "icon.ico"
+  icon: "static/icon.ico"
+mac:
+  category: "Assinador"
+  icon: "static/icon.512.png"
+  type: "distribution"
+linux:
+  target: "AppImage"
+  icon: "static/icon.png"
+  category: "Assinador"

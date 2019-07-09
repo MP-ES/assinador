@@ -1,9 +1,9 @@
-using Assinador.Models;
-using Microsoft.AspNetCore.Mvc;
-using Pkcs7lib;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Assinador.Models;
+using Microsoft.AspNetCore.Mvc;
+using Pkcs7lib;
 
 namespace Assinador.Controllers
 {
@@ -13,11 +13,11 @@ namespace Assinador.Controllers
         [HttpPost]
         public IEnumerable<ArquivoAssinado> SignFiles([FromBody] Parametro bodyContent)
         {
-            using (var pkcs7SignatureGenerator =
-                        new Pkcs7SignatureGenerator(bodyContent.token.LibraryPath,
-                                                    bodyContent.token.SerialNumber,
-                                                    bodyContent.token.Label,
-                                                    bodyContent.token.Password))
+            using(var pkcs7SignatureGenerator =
+                new Pkcs7SignatureGenerator(bodyContent.token.LibraryPath,
+                    bodyContent.token.SerialNumber,
+                    bodyContent.token.Label,
+                    bodyContent.token.Password))
             {
                 var arquivosAssinados = new List<ArquivoAssinado>();
 
@@ -33,18 +33,18 @@ namespace Assinador.Controllers
                         var hashOid = Oid.FromFriendlyName(arquivo.AlgoritmoHash.ToLower(), OidGroup.HashAlgorithm);
                         var digest = HashAlgorithmUtils.GetDigest(hashOid);
                         var signature =
-                                pkcs7SignatureGenerator.GenerateDetachedSignature(
-                                    arquivo.Hash,
-                                    hashOid.Value,
-                                    digest,
-                                    bouncyCertificate,
-                                    certPath);
+                            pkcs7SignatureGenerator.GenerateDetachedSignature(
+                                arquivo.Hash,
+                                hashOid.Value,
+                                digest,
+                                bouncyCertificate,
+                                certPath);
 
                         arquivosAssinados.Add(new ArquivoAssinado
                         {
                             Id = arquivo.Id,
-                            Assinado = true,
-                            Assinatura = signature
+                                Assinado = true,
+                                Assinatura = signature
                         });
                     }
                     catch (Exception ex)
@@ -52,8 +52,8 @@ namespace Assinador.Controllers
                         arquivosAssinados.Add(new ArquivoAssinado
                         {
                             Id = arquivo.Id,
-                            Assinado = false,
-                            Error = ex.ToString()
+                                Assinado = false,
+                                Error = ex.ToString()
                         });
                     }
                 }

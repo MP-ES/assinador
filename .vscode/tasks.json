@@ -5,20 +5,14 @@
             "label": "build",
             "command": "dotnet",
             "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/Assinador.csproj"
-            ],
+            "args": ["build", "${workspaceFolder}/backend/Assinador.csproj"],
             "problemMatcher": "$tsc"
         },
         {
             "label": "publish",
             "command": "dotnet",
             "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/Assinador.csproj"
-            ],
+            "args": ["publish", "${workspaceFolder}/backend/Assinador.csproj"],
             "problemMatcher": "$tsc"
         },
         {
@@ -28,7 +22,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/Assinador.csproj"
+                "${workspaceFolder}/backend/Assinador.csproj"
             ],
             "problemMatcher": "$tsc"
         }

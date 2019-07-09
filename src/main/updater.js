@@ -1,5 +1,5 @@
-const { autoUpdater } = require('electron-updater');
-const message = require('./message');
+import { autoUpdater } from 'electron-updater';
+import message from './message';
 
 let alert = false;
 autoUpdater.autoDownload = false;
@@ -37,4 +37,4 @@ const start = async (interative = false) => {
     autoUpdater.checkForUpdatesAndNotify();
 };
 
-module.exports = { start };
+export default { start };

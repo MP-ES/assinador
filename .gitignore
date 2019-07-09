@@ -3,6 +3,8 @@ Obfuscar/**/*
 !readme.md
 !Obfuscar.Console.exe
 
+**/installer
+
 # environment variables
 **/.env
 

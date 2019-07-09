@@ -1,4 +1,5 @@
-const { BrowserWindow } = require('electron');
+import { BrowserWindow } from 'electron';
+import path from 'path';
 
 let splashScreen = null;
 
@@ -19,7 +20,7 @@ const showSplash = () => {
         fullscreenable: false,
         frame: false
     });
-    splashScreen.loadFile('splash.html');
+    splashScreen.loadFile(path.join(__static, 'splash.html'));
     splashScreen.once('ready-to-show', () => {
         splashScreen.show();
         splashScreen.focus();
@@ -27,7 +28,7 @@ const showSplash = () => {
     splashScreen.on('closed', () => (splashScreen = null));
 };
 
-module.exports = {
+export default {
     getWindow: getWindow,
     start: showSplash
 };

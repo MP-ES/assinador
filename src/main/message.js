@@ -1,4 +1,4 @@
-const { dialog } = require('electron');
+import { dialog } from 'electron';
 
 const type = {
     NONE: 'none',
@@ -13,4 +13,4 @@ const show = (type, title, message, action) => {
     dialog.showMessageBox({ type, title, message });
 };
 
-module.exports = { type, show };
+export default { type, show };
