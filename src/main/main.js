@@ -3,6 +3,7 @@ import splash from './splash';
 import tray from './tray';
 import dotnet from './dotnet';
 import updater from './updater';
+import autolauncher from './autolauncher';
 
 app.setAsDefaultProtocolClient('assinador-mpes');
 
@@ -19,6 +20,7 @@ if (!gotTheLock) {
         splash.start();
         tray.start(app);
         updater.start();
+        autolauncher.start();
         await dotnet.start();
     });
 }
