@@ -6,9 +6,11 @@
     "scripts": {
         "dist:dir": "yarn build && electron-builder --dir",
         "dist": "yarn build && electron-builder -w -p always",
+        "dist:linux": "yarn build:net && yarn build && electron-builder -l -p always",
         "start": "electron-webpack dev --no-sandbox",
         "build": "electron-webpack",
-        "net": "node dotnet_helper.js -r"
+        "net": "node dotnet_helper.js -r",
+        "build:net": "node dotnet_helper.js -b -p static/bin"
     },
     "keywords": [
         "assinador",

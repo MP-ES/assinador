@@ -27,7 +27,7 @@ const startAspnetCoreApp = async () => {
 
             var waitOptions = {
                 resources: [`tcp:${port}`],
-                timeout: 10000
+                timeout: 60000
             };
 
             wait(waitOptions)

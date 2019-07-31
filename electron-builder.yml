@@ -1,6 +1,7 @@
 appId: "br.mp.mpes.assinador"
 productName: "Assinador MPES"
 compression: "maximum"
+artifactName: "setup-assinador.${ext}"
 directories:
   output: "installer"
 publish:
@@ -21,10 +22,11 @@ win:
   target: "nsis"
   icon: "static/icon.ico"
 mac:
-  category: "Assinador"
+  category: "Utilities"
   icon: "static/icon.512.png"
   type: "distribution"
 linux:
   target: "AppImage"
+  artifactName: "assinador.${ext}"
   icon: "static/icon.png"
-  category: "Assinador"
+  category: "Utility"
