@@ -15,12 +15,15 @@ namespace Assinador
         }
 
         public IConfiguration Configuration { get; }
+        private const string _cors_policy_name = "assinador_cors_policy";
 
         [ObfuscationAttribute(Exclude = true)]
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureSwaggerDocumentation();
+            services.ConfigureCors(_cors_policy_name);
             services.ConfigureWebApi();
+            
         }
 
         [ObfuscationAttribute(Exclude = true)]
@@ -36,6 +39,7 @@ namespace Assinador
                 app.UseHsts();
             }
 
+            app.UseCorsConfiguration(_cors_policy_name);
             app.UseHttpsRedirection();
             app.UseMvc()
                 .UseSwaggerDocumentation(env);
