@@ -15,33 +15,28 @@ namespace Assinador
         }
 
         public IConfiguration Configuration { get; }
-        private const string _cors_policy_name = "assinador_cors_policy";
 
         [ObfuscationAttribute(Exclude = true)]
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
         {
-            services.ConfigureSwaggerDocumentation();
-            services.ConfigureCors(_cors_policy_name);
-            services.ConfigureWebApi();
-            
+            services
+                .ConfigureSwaggerDocumentation()
+                .ConfigureCors()
+                .ConfigureWebApi();
         }
 
         [ObfuscationAttribute(Exclude = true)]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
 
-            app.UseCorsConfiguration(_cors_policy_name);
-            app.UseHttpsRedirection();
-            app.UseMvc()
+            app
+                .UseCors()
+                .UseHttpsRedirection()
+                .UseMvc()
                 .UseSwaggerDocumentation(env);
         }
     }
