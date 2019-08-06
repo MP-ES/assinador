@@ -1,9 +1,10 @@
 pipeline {
   agent none
   environment {
-    NEXUS_DEV_CREDENTIALS = 'NEXUS_DEV_CREDENTIALS'
-    NEXUS_REPOSITORY = 'assinador'
-    NEXUS_URL = 'http://pc63117-linux.mpes.gov.br:8081'
+    REPOSITORY = 'assinador'
+    REPOSITORY_PR = 'assinador_pr'
+    NEXUS_URL = 'https://artefatosdev.mpes.mp.br'
+    NEXUS_URL_PR = 'https://artefatosdev.mpes.mp.br'
   }
 
   options {
@@ -12,12 +13,21 @@ pipeline {
     ansiColor('xterm')
   }
 
+  parameters {
+    string(name: 'PR_ID', defaultValue: '-1', description: 'Identificador do Pull Request.', trim: true)
+  }
+
   stages {
     stage("build .net backend") {
+      when { 
+        expression { 
+          return params.PR_ID != '-1'
+        }
+      }
       agent {
         docker {
           image 'mcr.microsoft.com/dotnet/core/sdk:2.2'
-          reuseNode false
+          reuseNode true
         }
       }
       steps {
@@ -27,31 +37,49 @@ pipeline {
         }
       }
     }
-    stage('Deploy') {
+    stage('publish artifacts') {
+      when { 
+        expression { 
+          return params.PR_ID != '-1'
+        }
+      }
       agent {
         docker {
           image 'electronuserland/builder:wine'
           args '-v $WORKSPACE:/project'
-          reuseNode false
+          reuseNode true
         }
       }
       steps {
         dir('static') {
           unstash 'backend'
         }
-        sh 'yarn && yarn dist'
-        dir('installer') {
-          withCredentials([file(credentialsId: "$NEXUS_DEV_CREDENTIALS", variable: 'credentials')]) {
-            sh  '''
-                for f in *.exe; do \
-                  curl -v -u $credentials \
-                  --upload-file $f \
-                  ${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/$f; \
-                done
-                curl -v -u $credentials \
-                  --upload-file latest.yml \
-                  ${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/latest.yml
-                '''
+        script {
+          if (params.PR_ID != '0') {
+            sh '''
+              sed -i -E 's/(url:\\ \\").+\\"/\\1https\\:\\/\\/assinador\\.apps\\.mpes\\.mp\\.br\\/\\"/g' electron-builder.yml
+              '''
+          }
+        }
+        sh 'yarn && yarn release'
+        withCredentials([
+        usernamePassword(
+          credentialsId: 'SVC_NEXUS', 
+          passwordVariable: 'password', 
+          usernameVariable: 'user')
+          ]) {
+          script {
+            if (params.PR_ID == '0') {
+              sh '''
+                find installer/ -maxdepth 1 -type f -exec sh -c \
+                  'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL}/repository/${REPOSITORY}/$(basename {})' \\; 
+              '''
+            } else {
+              sh '''
+                find installer/ -maxdepth 1 -type f -exec sh -c \
+                  'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL_PR}/repository/${REPOSITORY_PR}/$(basename {})' \\; 
+              '''
+            }
           }
         }
       }

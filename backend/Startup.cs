@@ -17,7 +17,7 @@ namespace Assinador
         public IConfiguration Configuration { get; }
 
         [ObfuscationAttribute(Exclude = true)]
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             services
                 .ConfigureSwaggerDocumentation()

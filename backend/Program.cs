@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using Assinador.Configs;
@@ -21,38 +20,21 @@ namespace Assinador
                 if (!Certificate.Verify(cert_name))
                     return;
             }
-
-            CreateWebHostBuilder(args).Build().Run();
+            BuildWebHost().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
-        {
-            var apiPort = findArgValue<int>(args, "port");
-            if (apiPort > 0)
-                return WebHost.CreateDefaultBuilder(args)
-                    .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
-                    .UseKestrel()
-                    .ConfigureKestrel((context, options) =>
-                                        {
-                                            options.Listen(IPAddress.Loopback, apiPort, listenOptions =>
-                                            {
-                                                listenOptions.UseHttps(cert_name);
-                                            });
-                                        })
-                    .UseStartup<Startup>();
-
-            return WebHost.CreateDefaultBuilder(args)
-                .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
-                .UseStartup<Startup>();
-        }
-
-        private static T findArgValue<T>(string[] args, string argName)
-        {
-            var value = args.FirstOrDefault(a => a.ToUpper().Contains(argName.ToUpper()));
-            if (string.IsNullOrWhiteSpace(value))
-                return default(T);
-            else
-                return (T)Convert.ChangeType(value.Replace($"{argName}=", ""), typeof(T));
-        }
+        public static IWebHost BuildWebHost() => WebHost
+            .CreateDefaultBuilder()
+            .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
+            .UseKestrel()
+            .ConfigureKestrel((context, options) =>
+            {
+                options.Listen(IPAddress.Loopback, 19333, listenOptions =>
+                {
+                    listenOptions.UseHttps(cert_name);
+                });
+            })
+            .UseStartup<Startup>()
+            .Build();
     }
 }

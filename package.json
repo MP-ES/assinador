@@ -4,9 +4,9 @@
     "description": "Assinador de Documentos do MPES",
     "main": "main.js",
     "scripts": {
-        "dist:dir": "yarn build && electron-builder --dir",
-        "dist": "yarn build && electron-builder -w -p always",
-        "dist:linux": "yarn build:net && yarn build && electron-builder -l -p always",
+        "dist": "yarn build:net && yarn build && electron-builder",
+        "dist:dir": "yarn dist --dir",
+        "release": "yarn build && electron-builder -w",
         "start": "electron-webpack dev --no-sandbox",
         "build": "electron-webpack",
         "net": "node dotnet_helper.js -r",
