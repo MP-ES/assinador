@@ -6,7 +6,7 @@
     "scripts": {
         "dist": "yarn build:net && yarn build && electron-builder",
         "dist:dir": "yarn dist --dir",
-        "release": "yarn build && electron-builder -w",
+        "release": "yarn build && electron-builder -w -l",
         "start": "electron-webpack dev --no-sandbox",
         "build": "electron-webpack",
         "net": "node dotnet_helper.js -r",
