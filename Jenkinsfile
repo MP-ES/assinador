@@ -82,6 +82,7 @@ pipeline {
             }
           }
         }
+        cleanWs()
       }
     }
   }
@@ -95,4 +96,5 @@ pipeline {
         to: '$DEFAULT_RECIPIENTS'
     }
   }
+
 }
