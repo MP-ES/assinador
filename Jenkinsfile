@@ -2,8 +2,7 @@ pipeline {
   agent none
   environment {
     REPOSITORY = 'assinador'
-    REPOSITORY_PR = 'assinador_pr'
-    NEXUS_URL = 'https://artefatosdev.mpes.mp.br'
+    NEXUS_URL = 'https://artefatos.mpes.mp.br'
     NEXUS_URL_PR = 'https://artefatosdev.mpes.mp.br'
   }
 
@@ -18,7 +17,7 @@ pipeline {
   }
 
   stages {
-    stage("build .net backend") {
+    stage("build .net api") {
       when { 
         expression { 
           return params.PR_ID != '-1'
@@ -37,7 +36,7 @@ pipeline {
         }
       }
     }
-    stage('publish artifacts') {
+    stage('preparando agente para build/publish') {
       when { 
         expression { 
           return params.PR_ID != '-1'
@@ -50,39 +49,65 @@ pipeline {
           reuseNode true
         }
       }
-      steps {
-        dir('static') {
-          unstash 'backend'
-        }
-        script {
-          if (params.PR_ID != '0') {
-            sh '''
-              sed -i -E 's/(url:\\ \\").+\\"/\\1https\\:\\/\\/assinador\\.apps\\.mpes\\.mp\\.br\\/\\"/g' electron-builder.yml
-              '''
-          }
-        }
-        sh 'yarn && yarn release'
-        withCredentials([
-        usernamePassword(
-          credentialsId: 'SVC_NEXUS', 
-          passwordVariable: 'password', 
-          usernameVariable: 'user')
-          ]) {
-          script {
-            if (params.PR_ID == '0') {
-              sh '''
-                find installer/ -maxdepth 1 -type f -exec sh -c \
-                  'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL}/repository/${REPOSITORY}/$(basename {})' \\; 
-              '''
-            } else {
-              sh '''
-                find installer/ -maxdepth 1 -type f -exec sh -c \
-                  'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL_PR}/repository/${REPOSITORY_PR}/$(basename {})' \\; 
-              '''
+      stages{
+        stage('build electron') {
+          steps {
+            dir('static') {
+              unstash 'backend'
             }
+            script {
+              if (params.PR_ID != '0') {
+                sh '''
+                  sed -i -E 's/(url:\\ \\").+\\"/\\1https\\:\\/\\/assinador\\.dev\\.mpes\\.mp\\.br\\/\\"/g' electron-builder.yml
+                  '''
+              }
+            }
+            sh 'yarn && yarn release'
           }
         }
-        cleanWs()
+        stage('publish artifacts'){
+          steps {
+            dir('static') {
+              unstash 'backend'
+            }
+            script {
+              if (params.PR_ID != '0') {
+                sh '''
+                  sed -i -E 's/(url:\\ \\").+\\"/\\1https\\:\\/\\/assinador\\.dev\\.mpes\\.mp\\.br\\/\\"/g' electron-builder.yml
+                  '''
+              }
+            }
+            sh 'yarn && yarn release'
+            script {
+              if (params.PR_ID == '0') {
+                withCredentials([
+                usernamePassword(
+                  credentialsId: 'SVC_NEXUS', 
+                  passwordVariable: 'password', 
+                  usernameVariable: 'user')
+                  ]) {
+                    sh '''
+                      find installer/ -maxdepth 1 -type f -exec sh -c \
+                        'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL}/repository/${REPOSITORY}/$(basename {})' \\; 
+                    '''
+                  }
+              } else {
+                withCredentials([
+                usernamePassword(
+                  credentialsId: 'SVC_NEXUS_DEV', 
+                  passwordVariable: 'password', 
+                  usernameVariable: 'user')
+                  ]) {
+                    sh '''
+                      find installer/ -maxdepth 1 -type f -exec sh -c \
+                        'curl -v -f -u $user:$password --upload-file {} ${NEXUS_URL_PR}/repository/${REPOSITORY}/$(basename {})' \\; 
+                    '''
+                  }
+              }
+            }
+            cleanWs()
+          }
+        }
       }
     }
   }

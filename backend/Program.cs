@@ -9,9 +9,9 @@ namespace Assinador
 {
     public class Program
     {
-        static string cert_name = "local.pfx";
+        private const string cert_name = "local.pfx";
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -27,13 +27,11 @@ namespace Assinador
             .CreateDefaultBuilder()
             .UseContentRoot(AppDomain.CurrentDomain.BaseDirectory)
             .UseKestrel()
-            .ConfigureKestrel((context, options) =>
-            {
-                options.Listen(IPAddress.Loopback, 19333, listenOptions =>
-                {
-                    listenOptions.UseHttps(cert_name);
-                });
-            })
+            .ConfigureKestrel((_, options) =>
+                options.Listen(IPAddress.Loopback,
+                                19333,
+                                listenOptions =>
+                                    listenOptions.UseHttps(cert_name)))
             .UseStartup<Startup>()
             .Build();
     }
