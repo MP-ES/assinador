@@ -17,25 +17,6 @@ pipeline {
   }
 
   stages {
-    stage("build .net api") {
-      when { 
-        expression { 
-          return params.PR_ID != '-1'
-        }
-      }
-      agent {
-        docker {
-          image 'mcr.microsoft.com/dotnet/core/sdk:2.2'
-          reuseNode true
-        }
-      }
-      steps {
-        dir('backend') {
-          sh 'dotnet publish -o bin -r win-x64'
-          stash includes: 'bin/', name: 'backend'
-        }
-      }
-    }
     stage('preparando agente para build/publish') {
       when { 
         expression { 
@@ -52,9 +33,6 @@ pipeline {
       stages{
         stage('build electron') {
           steps {
-            dir('static') {
-              unstash 'backend'
-            }
             script {
               if (params.PR_ID != '0') {
                 sh '''
@@ -62,22 +40,12 @@ pipeline {
                   '''
               }
             }
-            sh 'yarn && yarn release'
+            sh 'npm i -g cross-env'
+            sh 'npm ci && npm run release'
           }
         }
         stage('publish artifacts'){
           steps {
-            dir('static') {
-              unstash 'backend'
-            }
-            script {
-              if (params.PR_ID != '0') {
-                sh '''
-                  sed -i -E 's/(url:\\ \\").+\\"/\\1https\\:\\/\\/assinador\\.dev\\.mpes\\.mp\\.br\\/\\"/g' electron-builder.yml
-                  '''
-              }
-            }
-            sh 'yarn && yarn release'
             script {
               if (params.PR_ID == '0') {
                 withCredentials([

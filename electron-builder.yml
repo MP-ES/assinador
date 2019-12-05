@@ -1,31 +1,38 @@
-appId: "br.mp.mpes.assinador"
-productName: "Assinador MPES"
-compression: "maximum"
-artifactName: "assinador-${version}-${os}.${ext}"
+appId: br.mp.mpes.assinador
+productName: Assinador MPES
+compression: maximum
+artifactName: assinador-${version}-${os}.${ext}
 directories:
-  output: "installer"
+  output: installer
 publish:
-  provider: "generic"
-  url: "https://assinador.mpes.mp.br/"
+  provider: generic
+  url: https://assinador.mpes.mp.br/
 protocols:
-  name: "Assinador MPES"
-  schemes: ["assinador-mpes"]
+  name: Assinador MPES
+  schemes: [assinador-mpes]
+
+win:
+  target: nsis
+  icon: static/icon.ico
+
 nsis:
-  installerIcon: "static/icon.ico"
+  installerIcon: static/icon.ico
   oneClick: true
   runAfterFinish: true
-  language: "1046"
+  language: 1046
   perMachine: false
   deleteAppDataOnUninstall: true
   createDesktopShortcut: true
-win:
-  target: "nsis"
-  icon: "static/icon.ico"
+
 mac:
-  category: "Utilities"
-  icon: "static/icon.512.png"
-  type: "distribution"
+  category: Utilities
+  icon: static/icon.512.png
+  type: distribution
+
 linux:
-  target: "AppImage"
-  icon: "static/icon.png"
-  category: "Utility"
+  target:
+    - rpm
+    - AppImage
+  icon: static/icon.png
+  category: Utility
+  packageCategory: Utility

@@ -1,26 +1,24 @@
 import { app } from 'electron';
-import splash from './splash';
 import tray from './tray';
-import dotnet from './dotnet';
 import updater from './updater';
 import autolauncher from './autolauncher';
+import server from './server';
 
 app.setAsDefaultProtocolClient('assinador-mpes');
 
 app.on('window-all-closed', () => {
-    app.quit();
+  app.quit();
 });
 
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
-    app.quit();
+  app.quit();
 } else {
-    app.on('ready', async () => {
-        splash.start();
-        tray.start(app);
-        updater.start();
-        autolauncher.start();
-        await dotnet.start();
-    });
+  app.on('ready', async () => {
+    tray.start(app);
+    updater.start();
+    autolauncher.start();
+    server.start();
+  });
 }

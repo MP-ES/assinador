@@ -6,23 +6,26 @@ autoUpdater.autoDownload = false;
 
 // autoUpdater.on('checking-for-update', () => {});
 autoUpdater.on('update-not-available', () => {
-    if (alert)
-        message.show(
-            message.type.INFO,
-            'Atualização',
-            'Você está com a versão atualizada do assinador!'
-        );
+  if (alert)
+    message.show({
+      type: message.type.INFO,
+      title: 'Atualização',
+      message: 'Você está com a versão atualizada do assinador!'
+    });
 });
 autoUpdater.on('update-available', () => {
-    message.show(
-        message.type.INFO,
-        'Atualização',
-        'Existe uma versão atualizada do assinador, ela será instalada agora!',
-        () => autoUpdater.downloadUpdate()
-    );
+  message.show(
+    {
+      type: message.type.INFO,
+      title: 'Atualização',
+      message:
+        'Existe uma versão atualizada do assinador, ela será instalada agora!'
+    },
+    () => autoUpdater.downloadUpdate()
+  );
 });
 autoUpdater.on('update-downloaded', info => {
-    setImmediate(() => autoUpdater.quitAndInstall());
+  setImmediate(() => autoUpdater.quitAndInstall());
 });
 // autoUpdater.on('error', err => {
 //     dialog.showMessageBox({
@@ -33,8 +36,8 @@ autoUpdater.on('update-downloaded', info => {
 // });
 
 const start = async (interative = false) => {
-    alert = interative;
-    autoUpdater.checkForUpdatesAndNotify();
+  alert = interative;
+  autoUpdater.checkForUpdatesAndNotify();
 };
 
 export default { start };
