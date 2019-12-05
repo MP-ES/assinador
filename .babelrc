@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": ["> 5%", "last 2 versions", "not ie <= 8"]
+        },
+        "modules": false,
+        "exclude": ["transform-regenerator"]
+      }
+    ]
+  ],
+  "plugins": []
+}

@@ -1,7 +1,6 @@
-Obfuscar/**/*
-!obfuscar.xml
-!readme.md
-!Obfuscar.Console.exe
+samples.http
+
+**/.cache/**/*
 
 **/installer
 
