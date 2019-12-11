@@ -1,11 +1,16 @@
 import { autoUpdater } from 'electron-updater';
+import logger from 'electron-log';
 import message from './message';
 
 let alert = false;
+logger.transports.file.level = 'debug';
+autoUpdater.logger = logger;
 autoUpdater.autoDownload = false;
 
 // autoUpdater.on('checking-for-update', () => {});
-autoUpdater.on('update-not-available', () => {
+autoUpdater.on('update-not-available', info => {
+  console.log('update-not-available');
+  console.log(info);
   if (alert)
     message.show({
       type: message.type.INFO,
@@ -13,7 +18,9 @@ autoUpdater.on('update-not-available', () => {
       message: 'Você está com a versão atualizada do assinador!'
     });
 });
-autoUpdater.on('update-available', () => {
+autoUpdater.on('update-available', info => {
+  console.log('update-available');
+  console.log(info);
   message.show(
     {
       type: message.type.INFO,
@@ -25,15 +32,14 @@ autoUpdater.on('update-available', () => {
   );
 });
 autoUpdater.on('update-downloaded', info => {
+  console.log('update-downloaded');
+  console.log(info);
   setImmediate(() => autoUpdater.quitAndInstall());
 });
-// autoUpdater.on('error', err => {
-//     dialog.showMessageBox({
-//         type: 'error',
-//         title: 'Erro na atualização',
-//         message: JSON.stringify(err, null, 2)
-//     });
-// });
+autoUpdater.on('error', error => {
+  console.log('update-error');
+  console.log(error);
+});
 
 const start = async (interative = false) => {
   alert = interative;
