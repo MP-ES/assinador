@@ -2,6 +2,7 @@ import * as graphene from 'graphene-pk11';
 import rfc5280 from 'asn1.js-rfc5280';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 
 import getLibs from './getLibs';
@@ -58,7 +59,7 @@ const getCertificates = () => {
     }
     mod.finalize();
   });
-  return certificates;
+  return sortBy(certificates, ['displayName', 'valid']);
 };
 
 export default getCertificates;
