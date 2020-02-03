@@ -1,0 +1,46 @@
+{
+  "name": "assinador.mpes",
+  "version": "3.0.1",
+  "description": "Assinador de Documentos do MPES",
+  "author": {
+    "name": "Ministério Público do Espírito Santo - MPES",
+    "email": "cinf@mpes.mp.br"
+  },
+  "homepage": "https://assinador.mpes.mp.br",
+  "license": "MIT",
+  "keywords": [
+    "assinador",
+    "mpes"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "release": "electron-webpack && electron-builder --x64",
+    "start": "cross-env NODE_ENV=develpment electron-webpack dev --no-sandbox",
+    "docker": "docker run --rm -it -v $PWD:/project -v $PWD/.cache/electron:/root/.cache/electron -v $PWD/.cache/electron-builder:/root/.cache/electron-builder --env ELECTRON_CACHE=\"/root/.cache/electron\" --env ELECTRON_BUILDER_CACHE=\"/root/.cache/electron-builder\" --entrypoint /bin/bash electronuserland/builder:wine"
+  },
+  "dependencies": {
+    "electron-sudo": "^4.0.12",
+    "source-map-support": "^0.5.16"
+  },
+  "devDependencies": {
+    "auto-launch": "^5.0.5",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.0",
+    "electron": "^7.1.10",
+    "electron-builder": "^22.2.0",
+    "electron-log": "^4.0.4",
+    "electron-updater": "^4.2.0",
+    "electron-webpack": "^2.7.4",
+    "electron-webpack-eslint": "^5.0.1",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "^1.19.1",
+    "webpack": "^4.41.5"
+  }
+}

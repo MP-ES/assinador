@@ -4,6 +4,10 @@ samples.http
 
 **/installer
 
+# certificates
+certificate/localhost*
+certificate/Root*
+
 # environment variables
 **/.env
 
@@ -194,7 +198,7 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.pfx
-!local.pfx
+dotnet/!localhost.pfx
 *.publishsettings
 node_modules/
 orleans.codegen.cs
