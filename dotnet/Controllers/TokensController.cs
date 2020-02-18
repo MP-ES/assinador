@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Assinador.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Asn1;
+using Pkcs7lib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Asn1;
-using Pkcs7lib;
 using Token = Assinador.Models.Token;
-using Assinador.Extensions;
-using Net.Pkcs11Interop.Common;
 
 namespace Assinador.Controllers
 {
@@ -17,17 +16,17 @@ namespace Assinador.Controllers
     [Route("api/[controller]")]
     public class TokensController : ControllerBase
     {
-        private readonly ILogger<TokensController> _logger;
+        private readonly string libsPath;
 
-        public TokensController(ILogger<TokensController> logger)
+        public TokensController(IConfiguration configuration)
         {
-            _logger = logger;
+            libsPath = configuration["LibsPath"];
         }
 
         [HttpGet]
         public IEnumerable<Token> Get()
         {
-            var libraries = Directory.GetFiles($"libs/");
+            var libraries = Directory.GetFiles(libsPath);
             var tokens = new List<Token>();
             foreach (var library in libraries)
             {

@@ -1,8 +1,7 @@
-﻿using System.Security.Cryptography;
-using Assinador.Models;
+﻿using Assinador.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pkcs7lib;
+using System.Security.Cryptography;
 
 namespace Assinador.Controllers
 {
@@ -10,13 +9,6 @@ namespace Assinador.Controllers
     [Route("api/[controller]")]
     public class SignController : ControllerBase
     {
-        private readonly ILogger<SignController> _logger;
-
-        public SignController(ILogger<SignController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpPost]
         public SignResponse Post([FromBody] SignPayload payload)
         {

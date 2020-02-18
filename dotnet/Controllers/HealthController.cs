@@ -1,7 +1,5 @@
-﻿using System.Reflection;
-using Assinador.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Assinador.Controllers
 {
@@ -9,21 +7,13 @@ namespace Assinador.Controllers
     [Route("[controller]")]
     public class HealthController : ControllerBase
     {
-        private readonly ILogger<HealthController> _logger;
-
-        public HealthController(ILogger<HealthController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpGet]
-        public Health Get()
+        public IActionResult Get()
         {
-            var version = $"{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}.{Assembly.GetEntryAssembly().GetName().Version.Revision}";
-            return new Health
+            return new ObjectResult(new
             {
-                Version = version
-            };
+                Version = $"{Assembly.GetEntryAssembly().GetName().Version.Major}.{Assembly.GetEntryAssembly().GetName().Version.Minor}.{Assembly.GetEntryAssembly().GetName().Version.Revision}"
+            });
         }
     }
 }
