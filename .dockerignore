@@ -1,0 +1,14 @@
+.git
+.gitignore
+Jenkinsfile
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/installer
+**/*.log*
+**/.env
+README.md
+**/.vs
+**/.vscode
+**/*.user
