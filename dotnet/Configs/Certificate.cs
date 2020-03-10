@@ -8,21 +8,28 @@ namespace Assinador.Configs
 {
     public class CertificateManager
     {
-        private const string root_resource = "assinador.localhost-root-ca.crt";
-        private const string cert_resource = "assinador.localhost.pfx";
         private readonly X509Certificate2Collection collection = new X509Certificate2Collection();
         public readonly X509Certificate2 certificate;
         private readonly byte[] rootCABuffer;
 
         public CertificateManager()
         {
-            var streamRoot = typeof(CertificateManager)
-                .Assembly
-                .GetManifestResourceStream(root_resource);
-            var bufferRoot = new byte[streamRoot.Length];
-            streamRoot.Read(bufferRoot, 0, (int)streamRoot.Length);
-            rootCABuffer = bufferRoot;
-            collection.Import(bufferRoot, null, X509KeyStorageFlags.PersistKeySet);
+            var cert_resource = "assinador.certificates.linux.localhost.pfx";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                const string root_resource = "assinador.certificates.linux.localhost-root-ca.crt";
+                var streamRoot = typeof(CertificateManager)
+                    .Assembly
+                    .GetManifestResourceStream(root_resource);
+                var bufferRoot = new byte[streamRoot.Length];
+                streamRoot.Read(bufferRoot, 0, (int)streamRoot.Length);
+                rootCABuffer = bufferRoot;
+                collection.Import(bufferRoot, null, X509KeyStorageFlags.PersistKeySet);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                cert_resource = "assinador.certificates.win.localhost.pfx";
+            }
 
             var streamCertificate = typeof(CertificateManager)
                 .Assembly
@@ -31,7 +38,8 @@ namespace Assinador.Configs
             streamCertificate.Read(bufferCertificate, 0, (int)streamCertificate.Length);
             collection.Import(bufferCertificate, null, X509KeyStorageFlags.PersistKeySet);
 
-            certificate = collection[1];
+            if (collection.Count > 0)
+                certificate = collection[collection.Count - 1];
         }
 
         public void Check()
@@ -64,8 +72,10 @@ namespace Assinador.Configs
         public bool Verify()
         {
             foreach (var certificate in collection)
+            {
                 if (!certificate.Verify())
                     return false;
+            }
             return true;
         }
 

@@ -11,8 +11,12 @@ const type = {
 };
 
 const show = (options, action) => {
-  if (action) dialog.showMessageBox(options, action);
-  dialog.showMessageBox({ icon: icon.get(), ...options });
+  const localOptions = { icon: icon.get(), ...options };
+  if (action) {
+    dialog.showMessageBox(localOptions).then(action);
+  } else {
+    dialog.showMessageBox(localOptions);
+  }
 };
 
 export default { type, show };

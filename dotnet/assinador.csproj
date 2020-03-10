@@ -12,13 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="localhost.pfx" />
-    <None Remove="localhost-root-ca.crt" />
+    <None Remove="certificates/win/localhost.pfx" />
+    <None Remove="certificates/linux/localhost.pfx" />
+    <None Remove="certificates/linux/localhost-root-ca.crt" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="localhost.pfx" />
-    <EmbeddedResource Include="localhost-root-ca.crt" />
+    <EmbeddedResource Include="certificates/win/localhost.pfx" />
+    <EmbeddedResource Include="certificates/linux/localhost.pfx" />
+    <EmbeddedResource Include="certificates/linux/localhost-root-ca.crt" />
   </ItemGroup>
 
   <ItemGroup>

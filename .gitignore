@@ -198,7 +198,7 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.pfx
-dotnet/!localhost.pfx
+!dotnet/certificates/**/localhost.pfx
 *.publishsettings
 node_modules/
 orleans.codegen.cs
