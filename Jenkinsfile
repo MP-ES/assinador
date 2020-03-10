@@ -21,7 +21,6 @@ pipeline {
       agent {
         docker {
           image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-          reuseNode true
         }
       }
       steps {
@@ -30,7 +29,7 @@ pipeline {
           stash includes: 'assinador', name: 'assinador'
         }
         dir('dotnet') {
-          sh 'dotnet publish -c release -p:PublishSingleFile=true --self-contained -o ./ -r win10-x64'
+          sh 'dotnet publish -c release -p:PublishSingleFile=true --self-contained -o ./ -r win-x64'
           stash includes: 'assinador.exe', name: 'assinador.exe'
         }
       }
@@ -43,10 +42,9 @@ pipeline {
       }
       agent {
         docker {
-          image 'registrydev.mpes.mp.br/infra/electronbuilder:latest'
-          // image 'electronuserland/builder:wine'
+          // image 'registrydev.mpes.mp.br/infra/electronbuilder:latest'
+          image 'electronuserland/builder:wine'
           args '-v $WORKSPACE:/project'
-          reuseNode true
         }
       }
       stages{

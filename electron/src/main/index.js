@@ -19,6 +19,6 @@ if (!gotTheLock) {
     tray.start(app);
     updater.start();
     autolauncher.start();
-    server.start();
+    await server.start();
   });
 }
