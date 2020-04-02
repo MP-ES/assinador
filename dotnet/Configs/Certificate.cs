@@ -53,13 +53,28 @@ namespace Assinador.Configs
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                var certPath = Path.Join("/",
+                string certPath;
+                var certPath_ubuntu = Path.Join("/",
+                    "usr",
+                    "local",
+                    "share",
+                    "ca-certificates");
+                var certPath_fedora = Path.Join("/",
                     "etc",
                     "pki",
                     "ca-trust",
                     "source",
-                    "anchors",
-                    "root-localhost-ca.crt");
+                    "anchors");
+                if (Directory.Exists(certPath_fedora))
+                {
+                    certPath = Path.Join(certPath_fedora,
+                        "root-localhost-ca.crt");
+                }
+                else
+                {
+                    certPath = Path.Join(certPath_ubuntu,
+                        "root-localhost-ca.crt");
+                }
                 if (!File.Exists(certPath))
                 {
                     File.WriteAllBytes(certPath, rootCABuffer);

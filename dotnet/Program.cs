@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using Assinador.Configs;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace assinador
@@ -34,15 +35,42 @@ namespace assinador
                 webBuilder.UseKestrel()
                     .ConfigureKestrel((context, options) =>
                     {
+                        bool.TryParse(context.Configuration["ASSINADOR_MPES_HTTP"], out var http);
                         int.TryParse(context.Configuration["ASSINADOR_MPES_PORTA"], out var port);
+                        int.TryParse(context.Configuration["ASSINADOR_MPES_HTTP_VERSAO"], out var version);
                         options.Limits.MaxRequestBodySize = 10 * 1024;
-                        options.Listen(IPAddress.Loopback,
-                            port > 0 ? port : _DefaultPort,
-                            listenOptions =>
-                            listenOptions.UseHttps(certificateManager.certificate));
+                        options.Limits.MaxConcurrentConnections = 100;
+                        options.Limits.MaxConcurrentUpgradedConnections = 100;
+                        options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
+                        options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
+                        if (http)
+                        {
+                            options.Listen(IPAddress.Loopback, port > 0 ? port : _DefaultPort);
+                        }
+                        else
+                        {
+                            options.Listen(IPAddress.Loopback,
+                                port > 0 ? port : _DefaultPort,
+                                listenOptions =>
+                                {
+                                    listenOptions.UseHttps(certificateManager.certificate);
+                                    listenOptions.Protocols = GetHttpProtocolVersion(version);
+                                });
+                        }
                     })
                     .UseStartup<Startup>();
             });
+
+        private static HttpProtocols GetHttpProtocolVersion(int version)
+        {
+            if (version < 0)
+                return HttpProtocols.None;
+            if (version == 1)
+                return HttpProtocols.Http1;
+            if (version == 3)
+                return HttpProtocols.Http1AndHttp2;
+            return HttpProtocols.Http2;
+        }
 
         private static string UnfoldException(Exception ex)
         {
