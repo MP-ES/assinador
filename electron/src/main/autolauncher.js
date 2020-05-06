@@ -5,7 +5,7 @@ const autoLauncher = new AutoLauncher({
 });
 
 const start = () => {
-  if (process.env.NODE_ENV !== 'develpment') autoLauncher.enable();
+  if (process.env.NODE_ENV !== 'development') autoLauncher.enable();
 };
 
 export default { start };

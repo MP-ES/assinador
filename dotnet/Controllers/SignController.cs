@@ -1,7 +1,7 @@
-﻿using Assinador.Models;
+﻿using System.Security.Cryptography;
+using Assinador.Models;
 using Microsoft.AspNetCore.Mvc;
 using Pkcs7lib;
-using System.Security.Cryptography;
 
 namespace Assinador.Controllers
 {
@@ -14,7 +14,7 @@ namespace Assinador.Controllers
         {
             var response = new SignResponse();
 
-            using(var pkcs7SignatureGenerator =
+            using (var pkcs7SignatureGenerator =
                 new Pkcs7SignatureGenerator(payload.Token.LibraryPath,
                     payload.Token.SerialNumber,
                     payload.Token.Label,

@@ -107,7 +107,7 @@ namespace Assinador.Configs
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                Console.WriteLine(ex);
                 return false;
             }
         }
