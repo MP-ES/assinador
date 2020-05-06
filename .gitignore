@@ -1,12 +1,14 @@
 samples.http
 
 **/.cache/**/*
-
 **/installer
 
 # certificates
 certificate/localhost*
 certificate/Root*
+
+# Jetbrains Rider
+**/.idea/*
 
 # environment variables
 **/.env

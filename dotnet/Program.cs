@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Text;
 using Assinador.Configs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace assinador
@@ -24,18 +24,26 @@ namespace assinador
             }
             catch (Exception ex)
             {
-                Console.Write(UnfoldException(ex));
+                Console.WriteLine(UnfoldException(ex));
             }
         }
 
         public static IHostBuilder CreateHostBuilder(CertificateManager certificateManager) =>
             Host.CreateDefaultBuilder()
+            .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureAppConfiguration((_, config) =>
+                {
+                    config
+                        .AddEnvironmentVariables()
+                        .AddJsonFile(@"appsettings.json", optional: true, reloadOnChange: true)
+                        .AddJsonFile(@"appsettings.Development.json", optional: true, reloadOnChange: true);
+                    ;
+                })
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseKestrel()
                     .ConfigureKestrel((context, options) =>
                     {
-                        bool.TryParse(context.Configuration["ASSINADOR_MPES_HTTP"], out var http);
                         int.TryParse(context.Configuration["ASSINADOR_MPES_PORTA"], out var port);
                         int.TryParse(context.Configuration["ASSINADOR_MPES_HTTP_VERSAO"], out var version);
                         options.Limits.MaxRequestBodySize = 10 * 1024;
@@ -43,20 +51,14 @@ namespace assinador
                         options.Limits.MaxConcurrentUpgradedConnections = 100;
                         options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
                         options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
-                        if (http)
-                        {
-                            options.Listen(IPAddress.Loopback, port > 0 ? port : _DefaultPort);
-                        }
-                        else
-                        {
-                            options.Listen(IPAddress.Loopback,
-                                port > 0 ? port : _DefaultPort,
-                                listenOptions =>
-                                {
-                                    listenOptions.UseHttps(certificateManager.certificate);
-                                    listenOptions.Protocols = GetHttpProtocolVersion(version);
-                                });
-                        }
+                        options.Listen(IPAddress.Loopback, (port > 0 ? port : _DefaultPort) + 1);
+                        options.Listen(IPAddress.Loopback,
+                            port > 0 ? port : _DefaultPort,
+                            listenOptions =>
+                            {
+                                listenOptions.UseHttps(certificateManager.certificate);
+                                listenOptions.Protocols = GetHttpProtocolVersion(version);
+                            });
                     })
                     .UseStartup<Startup>();
             });
