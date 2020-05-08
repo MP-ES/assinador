@@ -2,9 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using Assinador.Configs;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -18,9 +16,7 @@ namespace assinador
         {
             try
             {
-                var certMgr = new CertificateManager();
-                certMgr.Check();
-                CreateHostBuilder(certMgr).Build().Run();
+                CreateHostBuilder().Build().Run();
             }
             catch (Exception ex)
             {
@@ -28,7 +24,7 @@ namespace assinador
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(CertificateManager certificateManager) =>
+        public static IHostBuilder CreateHostBuilder() =>
             Host.CreateDefaultBuilder()
             .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureAppConfiguration((_, config) =>
@@ -45,34 +41,15 @@ namespace assinador
                     .ConfigureKestrel((context, options) =>
                     {
                         int.TryParse(context.Configuration["ASSINADOR_MPES_PORTA"], out var port);
-                        int.TryParse(context.Configuration["ASSINADOR_MPES_HTTP_VERSAO"], out var version);
                         options.Limits.MaxRequestBodySize = 10 * 1024;
                         options.Limits.MaxConcurrentConnections = 100;
                         options.Limits.MaxConcurrentUpgradedConnections = 100;
                         options.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(2);
                         options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(1);
-                        options.Listen(IPAddress.Loopback, (port > 0 ? port : _DefaultPort) + 1);
-                        options.Listen(IPAddress.Loopback,
-                            port > 0 ? port : _DefaultPort,
-                            listenOptions =>
-                            {
-                                listenOptions.UseHttps(certificateManager.certificate);
-                                listenOptions.Protocols = GetHttpProtocolVersion(version);
-                            });
+                        options.Listen(IPAddress.Loopback, port > 0 ? port : _DefaultPort);
                     })
                     .UseStartup<Startup>();
             });
-
-        private static HttpProtocols GetHttpProtocolVersion(int version)
-        {
-            if (version < 0)
-                return HttpProtocols.None;
-            if (version == 1)
-                return HttpProtocols.Http1;
-            if (version == 3)
-                return HttpProtocols.Http1AndHttp2;
-            return HttpProtocols.Http2;
-        }
 
         private static string UnfoldException(Exception ex)
         {
