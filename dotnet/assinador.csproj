@@ -12,18 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="certificates/win/localhost.pfx" />
-    <None Remove="certificates/linux/localhost.pfx" />
-    <None Remove="certificates/linux/localhost-root-ca.crt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="certificates/win/localhost.pfx" />
-    <EmbeddedResource Include="certificates/linux/localhost.pfx" />
-    <EmbeddedResource Include="certificates/linux/localhost-root-ca.crt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Pkcs11Interop" Version="5.0.0" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.8.5.2" />
   </ItemGroup>
