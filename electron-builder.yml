@@ -1,0 +1,42 @@
+appId: br.mp.mpes.assinador
+productName: Assinador MPES
+compression: maximum
+artifactName: assinador-${version}-${os}.${ext}
+directories:
+  output: installer
+publish:
+  provider: generic
+  url: https://assinador.mpes.mp.br/
+protocols:
+  name: Assinador MPES
+  schemes: [assinador-mpes]
+
+win:
+  target: nsis
+  icon: static/icon.ico
+  extraResources:
+    - from: './libs/windows'
+      to: 'static/libs'
+
+nsis:
+  installerIcon: static/icon.ico
+  oneClick: true
+  runAfterFinish: true
+  language: 1046
+  perMachine: false
+  deleteAppDataOnUninstall: true
+  createDesktopShortcut: true
+
+linux:
+  target: rpm
+  icon: static/icon.png
+  category: Utility
+  packageCategory: Utility
+  extraResources:
+    - from: './libs/linux'
+      to: 'static/libs'
+
+mac:
+  category: Utilities
+  icon: static/icon.512.png
+  type: distribution

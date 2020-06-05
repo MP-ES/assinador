@@ -1,14 +1,9 @@
 samples.http
+static/libs/**/*
 
 **/.cache/**/*
+
 **/installer
-
-# certificates
-certificate/localhost*
-certificate/Root*
-
-# Jetbrains Rider
-**/.idea/*
 
 # environment variables
 **/.env
@@ -200,7 +195,7 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.pfx
-!dotnet/certificates/**/localhost.pfx
+!local.pfx
 *.publishsettings
 node_modules/
 orleans.codegen.cs

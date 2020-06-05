@@ -12,32 +12,10 @@ pipeline {
   }
 
   stages {
-    stage("build .net api") {
-      when { 
-        expression { 
-          return params.PR_ID != '-1'
-        }
-      }
-      agent {
-        docker {
-          image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-        }
-      }
-      steps {
-        dir('dotnet') {
-          sh 'dotnet publish -c release -p:PublishSingleFile=true --self-contained -o ./ -r linux-x64'
-          stash includes: 'assinador', name: 'assinador'
-        }
-        dir('dotnet') {
-          sh 'dotnet publish -c release -p:PublishSingleFile=true --self-contained -o ./ -r win-x64'
-          stash includes: 'assinador.exe', name: 'assinador.exe'
-        }
-      }
-    }
     stage('preparando agente para build/publish') {
       when { 
         expression { 
-          return params.PR_ID != '-1'
+          return params.PR_ID == 'Não Executar'
         }
       }
       agent {
@@ -51,10 +29,6 @@ pipeline {
         stage('build electron') {
           steps {
             dir('electron') {
-              dir('release') {
-                unstash 'assinador'
-                unstash 'assinador.exe'
-              }
               script {
                 if (params.PR_ID != '0') {
                   sh '''
