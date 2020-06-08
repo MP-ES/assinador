@@ -8,9 +8,9 @@ const tokens = {
   win: {
     ePass2003: ['eps2003csp11.dll', path.join(libPath, 'eps2003csp11.dll')],
     eToken: [
-      'c:/windows/system32/eTPKCS11.dll',
+      path.join(libPath, 'eToken.dll'),
       'eTPKCS11.dll',
-      path.join(libPath, 'eToken.dll')
+      'c:/windows/system32/eTPKCS11.dll'
     ],
     OpenSC: ['c:/windows/system32/opensc-pkcs11.dll'],
     AET: [
