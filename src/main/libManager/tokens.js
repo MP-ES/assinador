@@ -14,9 +14,9 @@ const tokens = {
     ],
     OpenSC: ['c:/windows/system32/opensc-pkcs11.dll'],
     AET: [
+      path.join(libPath, 'aetpkss1.dll'),
       'aetpkcss1.dll',
-      'c:/windows/system32/aetpkss1.dll',
-      path.join(libPath, 'aetpkss1.dll')
+      'c:/windows/system32/aetpkss1.dll'
     ],
     GCLIB: ['gclib.dll'],
     PK2PRIV: ['pk2priv.dll'],
@@ -49,13 +49,13 @@ const tokens = {
       path.join(libPath, 'libcastle.so')
     ],
     eToken: [
+      path.join(libPath, 'libeToken.so'),
       '/lib/libeToken.so.8',
       '/lib/libeToken.so.8.0',
       '/lib64/libeToken.so.8',
       '/lib64/libeToken.so.8.0',
       'libeTPkcs11.so',
-      'libeToken.so',
-      path.join(libPath, 'libeToken.so')
+      'libeToken.so'
     ],
     OpenSC: [
       '/lib/opensc-pkcs11.so',
