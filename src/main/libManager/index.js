@@ -36,10 +36,11 @@ const tryLoad = lib => {
 };
 
 const identify = () => {
-  Object.keys(getTokens()).forEach(token => {
+  const osTokens = getTokens();
+  Object.keys(osTokens).forEach(token => {
     let valid = false;
     let index = 0;
-    const libs = tokens.win[token];
+    const libs = osTokens[token];
     while (!valid && libs.length > index) {
       valid = tryLoad(libs[index]);
       if (valid) validLibs.push(libs[index]);
