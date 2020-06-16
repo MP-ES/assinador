@@ -1,10 +1,10 @@
-/* global __static */
-import { Menu, nativeImage, Tray } from 'electron';
+import { app, Menu, nativeImage, Tray } from 'electron';
 import os from 'os';
 import path from 'path';
 import updater from './updater';
 import message from './message';
 import platform from './models/platform';
+import * as mainWindow from './mainWindow';
 
 let tray = null;
 const osPlatform = os.platform();
@@ -18,16 +18,23 @@ const getIcon = (resize = false) => {
   }
 };
 
-const start = app => {
+const start = () => {
   tray = new Tray(getIcon(true));
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Sair',
-      click: () => app.quit()
+      click: () => {
+        app.isQuitting = true;
+        app.quit();
+      }
     },
     {
       label: 'Atualizar',
       click: () => updater.start(true)
+    },
+    {
+      label: 'Configurar',
+      click: () => mainWindow.show()
     },
     {
       label: 'Sobre',

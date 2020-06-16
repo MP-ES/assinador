@@ -12,9 +12,15 @@ O assinador é um serviço web executado na máquina do usuário (localhost ou  
 ```
 *São aceitas apenas as portas 19333, 19334 e 19335.*
 
+### Para adicionar um caminho para a lib do token
+```powershell
+[System.Environment]::SetEnvironmentVariable('ASSINADOR_MPES_LIB_PATH', '/path/da/lib', 'User')
+```
+
 ## Consultando o valor das variáveis
 ```powershell
 [System.Environment]::GetEnvironmentVariable('ASSINADOR_MPES_PORTA')
+[System.Environment]::GetEnvironmentVariable('ASSINADOR_MPES_LIB_PATH')
 ```
 
 ## Verificando se o serviço está sendo executado

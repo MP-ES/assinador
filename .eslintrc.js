@@ -1,6 +1,6 @@
 module.exports = {
-  extends: ['standard', 'prettier'],
-  plugins: ['prettier'],
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  plugins: ['prettier', 'react'],
   rules: {
     'no-useless-catch': ['warn'],
     'no-async-promise-executor': ['warn'],
@@ -15,7 +15,15 @@ module.exports = {
   },
   env: {
     es6: true,
-    browser: false,
+    browser: true,
     node: true
+  },
+  globals: {
+    __static: true
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
   }
 };

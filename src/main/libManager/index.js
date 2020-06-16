@@ -1,56 +1,69 @@
 import os from 'os';
-import * as graphene from 'graphene-pk11';
 
 import platforms from '../models/platform';
-import tokens from './tokens';
+import config, { persist } from '../config';
 
-const validLibs = [];
+import libraries from './libraries';
+import tryLoad from './tryLoad';
+import getCertificates from './getCertificates';
 
 const getTokens = () => {
   const osPlatform = os.platform();
   switch (osPlatform) {
     case platforms.windows:
-      return tokens.win;
+      return libraries.win;
     case platforms.linux:
-      return tokens.linux;
+      return libraries.linux;
     case platforms.mac:
-      return tokens.mac;
-  }
-};
-
-const tryLoad = lib => {
-  try {
-    const mod = graphene.Module.load(lib);
-    try {
-      mod.initialize();
-      mod.getSlots(true);
-      return true;
-    } catch {
-      return false;
-    } finally {
-      mod.finalize();
-    }
-  } catch {
-    return false;
+      return libraries.mac;
   }
 };
 
 const identify = () => {
-  const osTokens = getTokens();
-  Object.keys(osTokens).forEach(token => {
+  const validLibs = [];
+  const tokens = getTokens();
+
+  Object.keys(tokens).forEach(token => {
     let valid = false;
     let index = 0;
-    const libs = osTokens[token];
+    const libs = tokens[token];
     while (!valid && libs.length > index) {
       valid = tryLoad(libs[index]);
       if (valid) validLibs.push(libs[index]);
       index += 1;
     }
   });
-};
 
-const getLibs = () => {
   return validLibs;
 };
 
-export default { identify, getLibs };
+const reloadLibs = () => {
+  config.libs = identify();
+  persist();
+  return config.libs;
+};
+
+const addLib = lib => {
+  if (!config.libs.find(internal => internal === lib)) {
+    config.libs.push(lib);
+    persist();
+  }
+  return config.libs;
+};
+
+const removeLib = lib => {
+  const index = config.libs.findIndex(internal => internal === lib);
+  if (index > -1) {
+    config.libs.splice(index, 1);
+    persist();
+  }
+  return config.libs;
+};
+
+export default {
+  identify,
+  reloadLibs,
+  addLib,
+  removeLib,
+  getCertificates
+};
