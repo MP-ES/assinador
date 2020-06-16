@@ -1,14 +1,22 @@
 import { app } from 'electron';
+
 import tray from './tray';
 import updater from './updater';
 import autolauncher from './autolauncher';
 import server from './server';
-import libManager from './libManager';
+
+import './config';
+import './ipc';
+import './mainWindow';
 
 app.setAsDefaultProtocolClient('assinador-mpes');
 
+// quit application when all windows are closed
 app.on('window-all-closed', () => {
-  app.quit();
+  // on macOS it is common for applications to stay open until the user explicitly quits
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 const gotTheLock = app.requestSingleInstanceLock();
@@ -16,8 +24,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
-  app.on('ready', async () => {
-    libManager.identify();
+  app.whenReady().then(async () => {
     tray.start(app);
     updater.start();
     autolauncher.start();

@@ -1,11 +1,11 @@
 import http from 'http';
 import { app } from 'electron';
 
+import config from '../config';
+
 import router from './router';
 import tokens from './routes/tokens';
 import sign from './routes/sign';
-
-const defaultPort = 19333;
 
 router.register('/health', 'GET', (_, res) => {
   res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -30,5 +30,6 @@ const server = http.createServer((req, res) => {
 });
 
 export default {
-  start: () => server.listen(process.env.ASSINADOR_MPES_PORTA || defaultPort)
+  start: () => server.listen(config.port),
+  restart: () => server.close(() => server.listen(config.port))
 };

@@ -4,12 +4,23 @@ compression: maximum
 artifactName: assinador-${version}-${os}.${ext}
 directories:
   output: installer
+  buildResources: build
 publish:
   provider: generic
   url: https://assinador.mpes.mp.br/
 protocols:
   name: Assinador MPES
   schemes: [assinador-mpes]
+files:
+  - filter:
+      - package.json
+  - from: 'dist/main'
+  - from: 'dist/renderer'
+extraResources:
+  - from: static
+    to: static
+extraMetadata:
+  main: main.js
 
 win:
   target: nsis

@@ -1,5 +1,4 @@
 // https://github.com/pablo-moreira/jsign/blob/53d04b547a4aa4aebba41dfae60fbe52ef98f938/src/main/java/com/github/jsign/model/PKCS11Tokens.java
-/* global __static */
 import path from 'path';
 
 const libPath = path.join(__static, 'libs');
