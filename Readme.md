@@ -3,17 +3,9 @@
 ## windows
 1. Install build tools:
 
-    `npm install --global --production windows-build-tools`
+    `npm install --global --production windows-build-tools --vs2019`
 
-2. download and install VCC Compiler:
-
-    https://www.microsoft.com/en-in/download/details.aspx?id=48159
-
-3. Set compiler version:
-
-    `npm config set msvs_version 2015 --global`
-
-4. Install cross-env global:
+2. Install cross-env global:
    
    `npm i -g cross-env`
 
