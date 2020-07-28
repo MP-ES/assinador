@@ -51,3 +51,6 @@ mac:
   category: Utilities
   icon: static/icon.512.png
   type: distribution
+  extraResources:
+    - from: './libs/mac'
+      to: 'static/libs'
