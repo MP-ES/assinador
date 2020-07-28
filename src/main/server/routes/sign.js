@@ -35,25 +35,20 @@ const signRoute = (req, res) => {
     req.body = JSON.parse(body);
     validateMiddleware(req, res, () => {
       const { token, hash } = req.body;
-      const assinatura = signer.sign(
+      const { signature, signCertificate, otherCertificates } = signer(
         token.libraryPath,
         token.slotId,
         token.password,
         Buffer.from(token.id, 'hex'),
         Buffer.from(hash, 'base64')
       );
-      const signCertificate = signer.getSignCertificate(
-        token.libraryPath,
-        token.slotId,
-        Buffer.from(token.id, 'hex')
-      );
-      const otherCertificates = signer.getAllCertificates(
-        token.libraryPath,
-        token.slotId
-      );
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(
-        JSON.stringify({ assinatura, signCertificate, otherCertificates })
+        JSON.stringify({
+          assinatura: signature,
+          signCertificate,
+          otherCertificates
+        })
       );
       res.end();
     });

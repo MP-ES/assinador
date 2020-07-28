@@ -21,7 +21,7 @@ const getCertificates = lib => {
     const mod = graphene.Module.load(lib);
     try {
       mod.initialize();
-      const slots = mod.getSlots(true);
+      const slots = mod.getSlots();
       for (let i = 0; i < slots.length; i++) {
         const slot = mod.getSlots(i);
         const session = slot.open();
@@ -56,11 +56,13 @@ const getCertificates = lib => {
             });
           }
         }
+        session.close();
+        slot.closeAll();
       }
     } catch (error) {
-      console.log(error);
+      console.warn(error);
     } finally {
-      mod.finalize();
+      mod.close();
     }
   } catch (error) {
     console.log(
