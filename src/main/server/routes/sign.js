@@ -1,6 +1,6 @@
 import { string, object } from 'yup';
 
-import signer from '../../utils/signer';
+import signer from '../../libManager/signer';
 
 const validateMiddleware = (req, res, next) => {
   const schema = object().shape({

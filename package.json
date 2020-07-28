@@ -1,6 +1,6 @@
 {
   "name": "assinador.mpes",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "Assinador de Documentos do MPES",
   "author": {
     "name": "Ministério Público do Espírito Santo - MPES",
@@ -26,7 +26,7 @@
     "auto-launch": "^5.0.5",
     "electron-log": "^4.2.0",
     "graphene-pk11": "^2.1.7",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.26.0",
     "source-map-support": "^0.5.19",
     "yup": "^0.29.0"
