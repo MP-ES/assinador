@@ -1,5 +1,4 @@
 import { app, Menu, nativeImage, Tray } from 'electron';
-import os from 'os';
 import path from 'path';
 import updater from './updater';
 import message from './message';
@@ -7,10 +6,10 @@ import platform from './models/platform';
 import * as mainWindow from './mainWindow';
 
 let tray = null;
-const osPlatform = os.platform();
 
 const getIcon = (resize = false) => {
-  if (osPlatform === platform.windows) return path.join(__static, 'icon.ico');
+  if (platform.current === platform.options.windows)
+    return path.join(__static, 'icon.ico');
   else {
     const image = nativeImage.createFromPath(path.join(__static, 'icon.png'));
     if (resize) return image.resize({ width: 16, height: 16 });

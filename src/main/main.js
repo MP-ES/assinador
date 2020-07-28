@@ -4,6 +4,7 @@ import tray from './tray';
 import updater from './updater';
 import autolauncher from './autolauncher';
 import server from './server';
+import platform from './models/platform';
 
 import './config';
 import './ipc';
@@ -14,7 +15,7 @@ app.setAsDefaultProtocolClient('assinador-mpes');
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
   // on macOS it is common for applications to stay open until the user explicitly quits
-  if (process.platform !== 'darwin') {
+  if (platform.currentPlatform !== platform.options.mac) {
     app.quit();
   }
 });

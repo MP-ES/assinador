@@ -5,6 +5,8 @@ import isEmpty from 'lodash/isEmpty';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 
+import platform from '../models/platform';
+
 moment.locale('pt-BR');
 
 const getSubjectIcpBrasil = cert => {
@@ -62,7 +64,8 @@ const getCertificates = lib => {
     } catch (error) {
       console.warn(error);
     } finally {
-      mod.close();
+      if (platform.current === platform.options.mac) mod.close();
+      else mod.finalize();
     }
   } catch (error) {
     console.log(
