@@ -34,7 +34,10 @@ const tokens = {
     ]
   },
   mac: {
-    ePass2003: [path.join(libPath, 'libcastle.1.0.0.dylib')],
+    ePass2003: [
+      '/usr/local/lib/libcastle.1.0.0.dylib',
+      path.join(libPath, 'libcastle.1.0.0.dylib')
+    ],
     eToken: [
       '/Library/Frameworks/eToken.framework/Versions/4.55.41/libeToken.dylib',
       '/usr/local/lib/libeTPkcs11.dylib',

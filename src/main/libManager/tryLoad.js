@@ -5,12 +5,12 @@ const tryLoad = lib => {
     const mod = graphene.Module.load(lib);
     try {
       mod.initialize();
-      mod.getSlots(true);
+      mod.getSlots();
       return true;
     } catch {
       return false;
     } finally {
-      mod.finalize();
+      mod.close();
     }
   } catch {
     return false;
