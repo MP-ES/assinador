@@ -1,5 +1,7 @@
 import * as graphene from 'graphene-pk11';
 
+import platform from '../models/platform';
+
 export default function sign(lib, slotId, password, certId, hash) {
   let signature = '';
   let certificate = '';
@@ -44,7 +46,8 @@ export default function sign(lib, slotId, password, certId, hash) {
     } catch (error) {
       console.log(error);
     } finally {
-      mod.close();
+      if (platform.current === platform.options.mac) mod.close();
+      else mod.finalize();
     }
   } catch (error) {
     console.log(`falha ao carregar lib: ${lib}`);

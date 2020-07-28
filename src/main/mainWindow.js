@@ -1,16 +1,14 @@
 import { app, BrowserWindow, nativeImage } from 'electron';
 import { format as formatUrl } from 'url';
-import os from 'os';
 import path from 'path';
 
 import platform from './models/platform';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const osPlatform = os.platform();
-
 const getIcon = (resize = false) => {
-  if (osPlatform === platform.windows) return path.join(__static, 'icon.ico');
+  if (platform.current === platform.options.windows)
+    return path.join(__static, 'icon.ico');
   else {
     const image = nativeImage.createFromPath(path.join(__static, 'icon.png'));
     if (resize) return image.resize({ width: 16, height: 16 });
@@ -76,7 +74,7 @@ function createMainWindow() {
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
   // on macOS it is common for applications to stay open until the user explicitly quits
-  if (process.platform !== 'darwin') {
+  if (platform.currentPlatform !== platform.options.mac) {
     app.quit();
   }
 });

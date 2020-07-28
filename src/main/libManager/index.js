@@ -1,5 +1,3 @@
-import os from 'os';
-
 import platforms from '../models/platform';
 import config, { persist } from '../config';
 
@@ -8,13 +6,12 @@ import tryLoad from './tryLoad';
 import getCertificates from './getCertificates';
 
 const getTokens = () => {
-  const osPlatform = os.platform();
-  switch (osPlatform) {
-    case platforms.windows:
+  switch (platforms.current) {
+    case platforms.options.windows:
       return libraries.win;
-    case platforms.linux:
+    case platforms.options.linux:
       return libraries.linux;
-    case platforms.mac:
+    case platforms.options.mac:
       return libraries.mac;
   }
 };
