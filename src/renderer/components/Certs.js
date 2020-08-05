@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/core';
 import { FaKey } from 'react-icons/fa';
 
-export default function Certs({ isOpen, onClose, lib, certs }) {
+export default function Certs({ isOpen, onClose, library, certs }) {
   return (
     <Modal
       isOpen={isOpen}
@@ -27,7 +27,7 @@ export default function Certs({ isOpen, onClose, lib, certs }) {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <Text isTruncated>{lib}</Text>
+          <Text isTruncated>{library}</Text>
         </ModalHeader>
         <ModalBody>
           {certs.length === 0 ? (
@@ -73,6 +73,6 @@ export default function Certs({ isOpen, onClose, lib, certs }) {
 Certs.propTypes = {
   isOpen: PropTypes.boolean,
   onClose: PropTypes.func,
-  lib: PropTypes.string,
+  library: PropTypes.string,
   certs: PropTypes.array
 };
