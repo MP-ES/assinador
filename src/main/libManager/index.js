@@ -41,7 +41,7 @@ const reloadLibs = () => {
 };
 
 const addLib = lib => {
-  if (!config.libs.find(internal => internal === lib)) {
+  if (!config.libs.find(internal => internal === lib) && tryLoad(lib)) {
     config.libs.push(lib);
     persist();
   }

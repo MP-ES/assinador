@@ -1,38 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Badge,
   Box,
   Heading,
   Stack,
   Text,
-  IconButton,
   Flex,
   Button,
-  Input,
   NumberInput
 } from '@chakra-ui/core';
-import { MdSettings } from 'react-icons/md';
-import { FaTrash, FaRecycle, FaPlus, FaList } from 'react-icons/fa';
+import { FaRecycle, FaPlus } from 'react-icons/fa';
 import { ipcRenderer, shell } from 'electron';
-import Certs from './Certs';
+
+import Token from './components/Token';
 
 export default function Config() {
-  const [versao, setVersao] = useState('');
-  const [libs, setLibs] = useState([]);
-  const [port, setPort] = useState('19333');
-  const [inputPort, setInputPort] = useState(port);
-  const [libValue, setLibValue] = useState('');
-  const [openModal, setOpenModal] = useState(false);
-  const [modalLib, setModalLib] = useState('');
-  const [certs, setCerts] = useState([]);
+  const [versao, setVersao] = React.useState('');
+  const [libs, setLibs] = React.useState([]);
+  const [port, setPort] = React.useState('19333');
+  const [inputPort, setInputPort] = React.useState(port);
+  const [restarting, setRestart] = React.useState(false);
+  const [reloading, setReload] = React.useState(false);
+  const [adding, setAdd] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     ipcRenderer.invoke('get-version').then(results => setVersao(results));
   }, []);
-  useEffect(() => {
+  React.useEffect(() => {
     ipcRenderer.invoke('get-libs').then(results => setLibs(results));
   }, []);
-  useEffect(() => {
+  React.useEffect(() => {
     ipcRenderer.invoke('get-port').then(results => setPort(results));
   }, []);
 
@@ -71,11 +68,14 @@ export default function Config() {
           value={inputPort}
         />
         <Button
-          color="blue.500"
+          variantColor="blue"
+          isLoading={restarting}
           onClick={() => {
+            setRestart(true);
             ipcRenderer
               .invoke('set-port', inputPort)
-              .then(results => setPort(results));
+              .then(results => setPort(results))
+              .finally(() => setRestart(false));
           }}
         >
           Alterar
@@ -85,11 +85,17 @@ export default function Config() {
         <Heading size="md">Bibliotecas:</Heading>
         <Button
           leftIcon={FaRecycle}
+          variantColor="white"
           variant="outline"
           size="sm"
           ml="auto"
+          isLoading={reloading}
           onClick={() => {
-            ipcRenderer.invoke('reload-libs').then(results => setLibs(results));
+            setReload(true);
+            ipcRenderer
+              .invoke('reload-libs')
+              .then(results => setLibs(results))
+              .finally(() => setReload(false));
           }}
         >
           Recarregar valores padrão
@@ -97,65 +103,25 @@ export default function Config() {
       </Stack>
       <Stack spacing={2}>
         {libs.map(lib => (
-          <Stack
-            isInline
-            align="center"
-            shadow="md"
-            p={2}
-            borderWidth="1px"
-            key={lib}
-          >
-            <Box as={MdSettings} color="green.500" fontSize={32} />
-            <Text isTruncated>{lib}</Text>
-            <IconButton
-              icon={FaList}
-              variant="ghost"
-              color="green.500"
-              ml="auto"
-              onClick={() =>
-                ipcRenderer.invoke('get-certificates', lib).then(results => {
-                  setCerts(results);
-                  setModalLib(lib);
-                  setOpenModal(true);
-                })
-              }
-            />
-            <IconButton
-              icon={FaTrash}
-              variant="ghost"
-              color="red.500"
-              onClick={() => {
-                ipcRenderer
-                  .invoke('remove-lib', lib)
-                  .then(results => setLibs(results));
-              }}
-            />
-          </Stack>
+          <Token key={lib} library={lib} setLibs={setLibs} />
         ))}
-        <Certs
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          lib={modalLib}
-          certs={certs}
-        />
-        <Stack isInline align="center" p={2}>
-          <Input
-            value={libValue}
-            onChange={event => setLibValue(event.target.value)}
-          />
-          <IconButton
-            icon={FaPlus}
-            variant="solid"
-            color="blue.500"
-            ml="auto"
-            onClick={() => {
-              ipcRenderer.invoke('add-lib', libValue).then(results => {
-                setLibs(results);
-                setLibValue('');
-              });
-            }}
-          />
-        </Stack>
+        <Button
+          leftIcon={FaPlus}
+          size="sm"
+          variantColor="green"
+          mt={2}
+          mr="auto"
+          isLoading={adding}
+          onClick={() => {
+            setAdd(true);
+            ipcRenderer
+              .invoke('add-lib')
+              .then(results => setLibs(results))
+              .finally(() => setAdd(false));
+          }}
+        >
+          Incluir Biblioteca
+        </Button>
       </Stack>
     </Box>
   );
