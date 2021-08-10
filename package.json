@@ -1,6 +1,6 @@
 {
-  "name": "assinador.mpes",
-  "version": "4.2.2",
+  "name": "assinador",
+  "version": "4.2.3",
   "description": "Assinador de Documentos do MPES",
   "author": {
     "name": "Ministério Público do Espírito Santo - MPES",
@@ -10,7 +10,10 @@
     "assinador",
     "mpes"
   ],
-  "homepage": "https://assinador.mpes.mp.br",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MP-ES/assinador.git"
+  },
   "license": "MIT",
   "scripts": {
     "preinstall": "cross-env HOME=~/.electron-gyp npm_config_target=9.0.0 npm_config_arch=x64 npm_config_target_arch=x64 npm_config_disturl=https://electronjs.org/headers npm_config_runtime=electron npm_config_build_from_source=true",
@@ -39,7 +42,7 @@
     "@emotion/styled": "^10.0.27",
     "babel-eslint": "^10.1.0",
     "electron": "^9.0.0",
-    "electron-builder": "^22.6.1",
+    "electron-builder": "^22.11.7",
     "electron-packager": "^14.2.1",
     "electron-rebuild": "^1.11.0",
     "electron-updater": "^4.3.1",
