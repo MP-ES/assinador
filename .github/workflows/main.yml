@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-      - bubach/actions
+    tags:
+      - v*
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -14,8 +15,7 @@ jobs:
     strategy:
       matrix:
         os:
-          # - macos-latest
-          # - ubuntu-latest
+          - macos-latest
           - windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,22 +29,4 @@ jobs:
       - run: npm install
       - run: npm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - id: package-json
-      #   uses: actions/github-script@v4.0.2
-      #   with:
-      #     result-encoding: string
-      #     script: |
-      #       const package = require('./package.json');
-      #       return package.version;
-      # - uses: softprops/action-gh-release@v1
-      #   with:
-      #     draft: true
-      #     prerelease: true
-      #     name: assinador
-      #     tag_name: 'v${{ steps.package-json.outputs.result}}'
-      #     files: |
-      #       installer/*
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,13 +1,11 @@
 appId: br.mp.mpes.assinador
 productName: Assinador MPES
 compression: maximum
-artifactName: assinador-${version}-${os}-${arch}.${ext}
+artifactName: assinador-${version}-${arch}-${os}.${ext}
 directories:
   output: installer
   buildResources: build
 publish:
-  # provider: generic
-  # url: https://assinador.mpes.mp.br/
   provider: github
   owner: 'MP-ES'
   repo: 'assinador'
@@ -31,7 +29,7 @@ win:
     - target: nsis
       arch:
         - x64
-        # - ia32
+        - ia32
   icon: static/icon.ico
   extraResources:
     - from: './libs/windows'
