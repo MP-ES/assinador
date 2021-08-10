@@ -30,6 +30,7 @@ jobs:
       - run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - id: package-json
       #   uses: actions/github-script@v4.0.2
       #   with:

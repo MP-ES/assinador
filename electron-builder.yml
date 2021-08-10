@@ -10,11 +10,7 @@ publish:
   # url: https://assinador.mpes.mp.br/
   provider: github
   owner: 'MP-ES'
-  vPrefixedTagName: true
-  host: github.com
-  protocol: https
-  releaseType: draft
-  private: true
+  repo: 'assinador'
 
 protocols:
   name: Assinador MPES
