@@ -6,8 +6,15 @@ directories:
   output: installer
   buildResources: build
 publish:
-  provider: generic
-  url: https://assinador.mpes.mp.br/
+  # provider: generic
+  # url: https://assinador.mpes.mp.br/
+  provider: github
+  owner: 'MP-ES'
+  vPrefixedTagName: true
+  host: github.com
+  protocol: https
+  releaseType: draft
+  private: true
 
 protocols:
   name: Assinador MPES

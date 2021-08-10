@@ -28,20 +28,22 @@ jobs:
       - run: npm install --global cross-env
       - run: npm install
       - run: npm run release
-      - id: package-json
-        uses: actions/github-script@v4.0.2
-        with:
-          result-encoding: string
-          script: |
-            const package = require('./package.json');
-            return package.version;
-      - uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          prerelease: true
-          name: assinador
-          tag_name: 'v${{ steps.package-json.outputs.result}}'
-          files: |
-            installer/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - id: package-json
+      #   uses: actions/github-script@v4.0.2
+      #   with:
+      #     result-encoding: string
+      #     script: |
+      #       const package = require('./package.json');
+      #       return package.version;
+      # - uses: softprops/action-gh-release@v1
+      #   with:
+      #     draft: true
+      #     prerelease: true
+      #     name: assinador
+      #     tag_name: 'v${{ steps.package-json.outputs.result}}'
+      #     files: |
+      #       installer/*
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
