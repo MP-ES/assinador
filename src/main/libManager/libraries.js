@@ -1,19 +1,13 @@
 // https://github.com/pablo-moreira/jsign/blob/53d04b547a4aa4aebba41dfae60fbe52ef98f938/src/main/java/com/github/jsign/model/PKCS11Tokens.java
-import path from 'path';
-
-const libPath = path.join(__static, 'libs');
-
 const tokens = {
   win: {
-    ePass2003: ['eps2003csp11.dll', path.join(libPath, 'eps2003csp11.dll')],
+    ePass2003: ['eps2003csp11.dll'],
     eToken: [
-      path.join(libPath, 'eToken.dll'),
       'eTPKCS11.dll',
       'c:/windows/system32/eTPKCS11.dll'
     ],
     OpenSC: ['c:/windows/system32/opensc-pkcs11.dll'],
     AET: [
-      path.join(libPath, 'aetpkss1.dll'),
       'aetpkcss1.dll',
       'c:/windows/system32/aetpkss1.dll'
     ],
@@ -35,8 +29,7 @@ const tokens = {
   },
   mac: {
     ePass2003: [
-      '/usr/local/lib/libcastle.1.0.0.dylib',
-      path.join(libPath, 'libcastle.1.0.0.dylib')
+      '/usr/local/lib/libcastle.1.0.0.dylib'
     ],
     eToken: [
       '/Library/Frameworks/eToken.framework/Versions/4.55.41/libeToken.dylib',
@@ -49,10 +42,8 @@ const tokens = {
     ePass2003: [
       'libcastle.so.1.0.0',
       'libcastle.so',
-      path.join(libPath, 'libcastle.so')
     ],
     eToken: [
-      path.join(libPath, 'libeToken.so'),
       '/lib/libeToken.so.8',
       '/lib/libeToken.so.8.0',
       '/lib64/libeToken.so.8',
