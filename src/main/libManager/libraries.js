@@ -1,16 +1,9 @@
-// https://github.com/pablo-moreira/jsign/blob/53d04b547a4aa4aebba41dfae60fbe52ef98f938/src/main/java/com/github/jsign/model/PKCS11Tokens.java
 const tokens = {
   win: {
     ePass2003: ['eps2003csp11.dll'],
-    eToken: [
-      'eTPKCS11.dll',
-      'c:/windows/system32/eTPKCS11.dll'
-    ],
+    eToken: ['eTPKCS11.dll', 'c:/windows/system32/eTPKCS11.dll'],
     OpenSC: ['c:/windows/system32/opensc-pkcs11.dll'],
-    AET: [
-      'aetpkcss1.dll',
-      'c:/windows/system32/aetpkss1.dll'
-    ],
+    AET: ['aetpkcss1.dll', 'c:/windows/system32/aetpkss1.dll'],
     GCLIB: ['gclib.dll'],
     PK2PRIV: ['pk2priv.dll'],
     W32PK2IG: ['w32pk2ig.dll'],
@@ -28,9 +21,7 @@ const tokens = {
     ]
   },
   mac: {
-    ePass2003: [
-      '/usr/local/lib/libcastle.1.0.0.dylib'
-    ],
+    ePass2003: ['/usr/local/lib/libcastle.1.0.0.dylib'],
     eToken: [
       '/Library/Frameworks/eToken.framework/Versions/4.55.41/libeToken.dylib',
       '/usr/local/lib/libeTPkcs11.dylib',
@@ -39,10 +30,7 @@ const tokens = {
     WDPKCS: ['libwdpkcs.dylib', '/usr/local/lib/libwdpkcs.dylib']
   },
   linux: {
-    ePass2003: [
-      'libcastle.so.1.0.0',
-      'libcastle.so',
-    ],
+    ePass2003: ['libcastle.so.1.0.0', 'libcastle.so'],
     eToken: [
       '/lib/libeToken.so.8',
       '/lib/libeToken.so.8.0',

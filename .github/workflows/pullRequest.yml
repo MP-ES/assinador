@@ -1,0 +1,20 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.4.0
+        with:
+          node-version: 14
+          cache: 'npm'
+      - run: npm install --global cross-env && npm install
+      - run: npm run lint

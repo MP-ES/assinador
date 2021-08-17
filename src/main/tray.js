@@ -44,7 +44,7 @@ const start = () => {
         app.isQuitting = true;
         app.quit();
       }
-    },
+    }
   ]);
   tray.setToolTip('Assinador MPES');
   tray.setContextMenu(contextMenu);
