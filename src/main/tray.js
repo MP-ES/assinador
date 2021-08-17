@@ -21,19 +21,12 @@ const start = () => {
   tray = new Tray(getIcon(true));
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Sair',
-      click: () => {
-        app.isQuitting = true;
-        app.quit();
-      }
+      label: 'Configurar',
+      click: () => mainWindow.show()
     },
     {
       label: 'Atualizar',
       click: () => updater.start(true)
-    },
-    {
-      label: 'Configurar',
-      click: () => mainWindow.show()
     },
     {
       label: 'Sobre',
@@ -44,7 +37,14 @@ const start = () => {
           message: `Assinador MPES`,
           detail: `Versão ${app.getVersion()}`
         })
-    }
+    },
+    {
+      label: 'Sair',
+      click: () => {
+        app.isQuitting = true;
+        app.quit();
+      }
+    },
   ]);
   tray.setToolTip('Assinador MPES');
   tray.setContextMenu(contextMenu);
