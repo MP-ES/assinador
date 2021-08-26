@@ -20,6 +20,7 @@ const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Request-Method', '*');
   res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, HEAD');
   res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Cache-Control', 'no-cache');
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end();
