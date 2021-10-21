@@ -1,7 +1,7 @@
 import { app, ipcMain, dialog } from 'electron';
 
 import libManager from './libManager';
-import config, { setPort } from './config';
+import config, { setPort, setDevMode } from './config';
 import platform from './models/platform';
 
 function getFileFilter() {
@@ -24,9 +24,13 @@ ipcMain.handle('get-port', async () => config.port);
 
 ipcMain.handle('get-libs', async () => config.libs);
 
+ipcMain.handle('get-dev-mode', async () => config.devMode);
+
 ipcMain.handle('reload-libs', async () => libManager.reloadLibs());
 
 ipcMain.handle('set-port', async (_event, port) => setPort(port));
+
+ipcMain.handle('set-dev-mode', async (_event, devMode) => setDevMode(devMode));
 
 ipcMain.handle('add-lib', async () => {
   const [result] = dialog.showOpenDialogSync(null, {
