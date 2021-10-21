@@ -9,7 +9,8 @@ const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 
 let config = {
   port: 19333,
-  libs: []
+  libs: [],
+  devMode: false
 };
 
 function readFromFile() {
@@ -17,6 +18,7 @@ function readFromFile() {
     const settingsFile = JSON.parse(fs.readFileSync(settingsPath));
     config.port = settingsFile.port;
     config.libs = settingsFile.libs;
+    config.devMode = settingsFile.devMode || false;
   } catch {
     config.libs = libManager.identify();
     persist();
@@ -32,6 +34,12 @@ export function setPort(port) {
   persist();
   server.restart();
   return config.port;
+}
+
+export function setDevMode(devMode) {
+  config.devMode = devMode;
+  persist();
+  return config.devMode;
 }
 
 readFromFile();

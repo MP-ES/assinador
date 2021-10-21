@@ -9,7 +9,7 @@ import {
   Button,
   NumberInput
 } from '@chakra-ui/core';
-import { FaRecycle, FaPlus } from 'react-icons/fa';
+import { FaRecycle, FaPlus, FaBug } from 'react-icons/fa';
 import { ipcRenderer, shell } from 'electron';
 
 import Token from './components/Token';
@@ -22,6 +22,8 @@ export default function Config() {
   const [restarting, setRestart] = React.useState(false);
   const [reloading, setReload] = React.useState(false);
   const [adding, setAdd] = React.useState(false);
+  const [devMode, setDevMode] = React.useState(false);
+  const [changingDevMode, setChangingDevMode] = React.useState(false);
 
   React.useEffect(() => {
     ipcRenderer.invoke('get-version').then(results => setVersao(results));
@@ -31,6 +33,9 @@ export default function Config() {
   }, []);
   React.useEffect(() => {
     ipcRenderer.invoke('get-port').then(results => setPort(results));
+  }, []);
+  React.useEffect(() => {
+    ipcRenderer.invoke('get-dev-mode').then(results => setDevMode(results));
   }, []);
 
   return (
@@ -89,6 +94,7 @@ export default function Config() {
           variant="outline"
           size="sm"
           ml="auto"
+          w="14rem"
           isLoading={reloading}
           onClick={() => {
             setReload(true);
@@ -99,6 +105,24 @@ export default function Config() {
           }}
         >
           Recarregar valores padrão
+        </Button>
+        <Button
+          leftIcon={FaBug}
+          variantColor="white"
+          variant="outline"
+          size="sm"
+          ml="auto"
+          w="14rem"
+          isLoading={changingDevMode}
+          onClick={() => {
+            setChangingDevMode(true);
+            ipcRenderer
+              .invoke('set-dev-mode', !devMode)
+              .then(results => setDevMode(results))
+              .finally(() => setChangingDevMode(false));
+          }}
+        >
+          {devMode ? 'Desabilitar' : 'Habilitar'} modo teste
         </Button>
       </Stack>
       <Stack spacing={2}>
