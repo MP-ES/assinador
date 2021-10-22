@@ -37,11 +37,19 @@ const signRoute = (req, res) => {
       const { token, hash } = req.body;
       let result;
       if (token.libraryPath === 'test') {
-        result = {
-          signature: 'test',
-          signCertificate: 'test',
-          otherCertificates: 'test'
-        };
+        if (token.slotId < 2) {
+          result = {
+            signature: 'test',
+            signCertificate: 'test',
+            otherCertificates: ['test']
+          };
+        } else {
+          result = {
+            signature: '',
+            signCertificate: '',
+            otherCertificates: []
+          };
+        }
       } else {
         result = signer(
           token.libraryPath,
