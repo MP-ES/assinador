@@ -1,7 +1,14 @@
 import { app, ipcMain, dialog } from 'electron';
 
 import libManager from './libManager';
-import config, { setPort, setDevMode } from './config';
+import config, {
+  setPort,
+  setDevMode,
+  addCert,
+  removeCert,
+  toggleCertValid,
+  toggleCertError
+} from './config';
 import platform from './models/platform';
 
 function getFileFilter() {
@@ -47,3 +54,13 @@ ipcMain.handle('remove-lib', async (_event, lib) => libManager.removeLib(lib));
 ipcMain.handle('get-certificates', async (_event, lib) =>
   libManager.getCertificates(lib)
 );
+
+ipcMain.handle('get-dev-certs', async () => config.devCerts);
+
+ipcMain.handle('add-cert', async (_event, valid) => addCert(valid));
+
+ipcMain.handle('remove-cert', async (_event, id) => removeCert(id));
+
+ipcMain.handle('toggle-cert-valid', async (_event, id) => toggleCertValid(id));
+
+ipcMain.handle('toggle-cert-error', async (_event, id) => toggleCertError(id));
