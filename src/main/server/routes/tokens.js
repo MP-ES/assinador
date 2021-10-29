@@ -8,30 +8,7 @@ const tokenRoute = async (_, res) => {
     certificates = [...certificates, ...certs];
   });
   if (config.devMode) {
-    certificates = [
-      ...certificates,
-      {
-        id: 'a0000000',
-        displayName: 'Certificado de teste (funcional)',
-        valid: true,
-        libraryPath: 'test',
-        slotId: 0
-      },
-      {
-        id: 'b0000000',
-        displayName: 'Certificado de teste (vencido)',
-        valid: false,
-        libraryPath: 'test',
-        slotId: 1
-      },
-      {
-        id: 'c0000000',
-        displayName: 'Certificado de teste (erro)',
-        valid: true,
-        libraryPath: 'test',
-        slotId: 2
-      }
-    ];
+    certificates = [...certificates, ...config.devCerts];
   }
   res.writeHead(200, { 'Content-Type': 'application/json' });
   res.write(JSON.stringify(certificates));
