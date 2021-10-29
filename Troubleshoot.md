@@ -1,5 +1,6 @@
 # Assinador MPES
-O assinador é um serviço web executado na máquina do usuário (localhost ou  127.0.0.1), usando a porta padrão 19333 e o protocolo HTTPS.
+O assinador é um serviço web executado na máquina do usuário (localhost ou  127.0.0.1), usando a porta padrão 19333 e o protocolo HTTP utilizando *locally-delivered mixed resources*. Mais detalhes em:
+https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content#loading_locally_delivered_mixed-resources
 
 ## Mudando as configurações padrão
 É possível alterar as configurações usando variáveis de ambiente.
