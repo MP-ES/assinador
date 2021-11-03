@@ -45,6 +45,7 @@ export default function sign(lib, slotId, password, certId, hash) {
       slot.closeAll();
     } catch (error) {
       console.log(error);
+      throw error;
     } finally {
       if (platform.current === platform.options.mac) mod.close();
       else mod.finalize();

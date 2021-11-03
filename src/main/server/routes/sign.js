@@ -34,41 +34,45 @@ const signRoute = (req, res) => {
   req.on('end', () => {
     req.body = JSON.parse(body);
     validateMiddleware(req, res, () => {
-      const { token, hash } = req.body;
-      let result;
-      if (token.libraryPath === 'test') {
-        if (token.throwError) {
-          result = {
-            signature: '',
-            signCertificate: '',
-            otherCertificates: []
-          };
+      try {
+        const { token, hash } = req.body;
+        let result;
+        if (token.libraryPath === 'test') {
+          if (token.throwError) {
+            throw new Error('Assinatura inválida');
+          } else {
+            result = {
+              signature: 'test',
+              signCertificate: 'test',
+              otherCertificates: ['test']
+            };
+          }
         } else {
-          result = {
-            signature: 'test',
-            signCertificate: 'test',
-            otherCertificates: ['test']
-          };
+          result = signer(
+            token.libraryPath,
+            token.slotId,
+            token.password,
+            Buffer.from(token.id, 'hex'),
+            Buffer.from(hash, 'base64')
+          );
         }
-      } else {
-        result = signer(
-          token.libraryPath,
-          token.slotId,
-          token.password,
-          Buffer.from(token.id, 'hex'),
-          Buffer.from(hash, 'base64')
+        const { signature, signCertificate, otherCertificates } = result;
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(
+          JSON.stringify({
+            assinatura: signature,
+            signCertificate,
+            otherCertificates
+          })
         );
+        res.end();
+      } catch (err) {
+        res.writeHead(412, { 'Content-Type': 'application/json' });
+        res.write(
+          JSON.stringify({ messages: [err.message], exceptionType: 'error' })
+        );
+        res.end();
       }
-      const { signature, signCertificate, otherCertificates } = result;
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write(
-        JSON.stringify({
-          assinatura: signature,
-          signCertificate,
-          otherCertificates
-        })
-      );
-      res.end();
     });
   });
 };
