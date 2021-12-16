@@ -52,6 +52,7 @@ export default function sign(lib, slotId, password, certId, hash) {
     }
   } catch (error) {
     console.log(`falha ao carregar lib: ${lib}`);
+    throw error;
   }
   return {
     signature: signature.toString('base64'),
