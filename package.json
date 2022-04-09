@@ -33,7 +33,7 @@
     "electron-log": "^4.2.0",
     "graphene-pk11": "^2.1.7",
     "lodash": "^4.17.19",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "source-map-support": "^0.5.19",
     "yup": "^0.29.0"
   },
