@@ -1,14 +1,13 @@
 import React from 'react';
-import { ThemeProvider, CSSReset } from '@chakra-ui/core';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import Config from './Config';
 
 function App() {
   return (
-    <ThemeProvider>
-      <CSSReset />
+    <ChakraProvider>
       <Config />
-    </ThemeProvider>
+    </ChakraProvider>
   );
 }
 

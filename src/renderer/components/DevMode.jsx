@@ -17,9 +17,8 @@ import {
   ModalCloseButton,
   Stack,
   Text
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { FaKey, FaPlus, FaRecycle, FaTrash } from 'react-icons/fa';
-import { ipcRenderer } from 'electron';
 
 export default function DevMode({ isOpen, onClose }) {
   const [devCerts, setDevCerts] = React.useState([]);
@@ -27,10 +26,10 @@ export default function DevMode({ isOpen, onClose }) {
   const [changingDevMode, setChangingDevMode] = React.useState(false);
 
   React.useEffect(() => {
-    ipcRenderer.invoke('get-dev-mode').then(results => setDevMode(results));
+    window.electronAPI.getDevMode().then(results => setDevMode(results));
   }, []);
   React.useEffect(() => {
-    ipcRenderer.invoke('get-dev-certs').then(results => setDevCerts(results));
+    window.electronAPI.getDevCerts().then(results => setDevCerts(results));
   }, []);
 
   return (
@@ -47,18 +46,17 @@ export default function DevMode({ isOpen, onClose }) {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Stack align="center" isInline my={2}>
+          <Stack align="center" direction="row" my={2}>
             <Heading size="md">Habilitado:</Heading>
             <Button
               size="sm"
-              variantColor="white"
               variant="outline"
-              leftIcon={FaRecycle}
+              leftIcon={<FaRecycle />}
               isLoading={changingDevMode}
               onClick={() => {
                 setChangingDevMode(true);
-                ipcRenderer
-                  .invoke('set-dev-mode', !devMode)
+                window.electronAPI
+                  .setDevMode(!devMode)
                   .then(results => setDevMode(results))
                   .finally(() => setChangingDevMode(false));
               }}
@@ -67,15 +65,15 @@ export default function DevMode({ isOpen, onClose }) {
             </Button>
           </Stack>
 
-          <Stack align="center" isInline my={2}>
+          <Stack align="center" direction="row" my={2}>
             <Heading size="md">Certificados:</Heading>
             <Button
               size="sm"
-              leftIcon={FaPlus}
-              variantColor="green"
+              leftIcon={<FaPlus />}
+              colorScheme="green"
               onClick={() => {
-                ipcRenderer
-                  .invoke('add-cert', true)
+                window.electronAPI
+                  .addCert(true)
                   .then(results => setDevCerts(results));
               }}
             >
@@ -90,7 +88,7 @@ export default function DevMode({ isOpen, onClose }) {
               justifyContent="center"
               textAlign="center"
             >
-              <Stack isInline my={4}>
+              <Stack direction="row" my={4}>
                 <AlertIcon />
                 <AlertTitle mr={2}>Nenhum certificado encontrado.</AlertTitle>
               </Stack>
@@ -103,24 +101,24 @@ export default function DevMode({ isOpen, onClose }) {
             <Stack spacing={2}>
               {devCerts.map(cert => (
                 <Stack
-                  key={cert}
+                  key={cert.id}
                   shadow="md"
                   p={2}
                   borderWidth="1px"
                   spacing={2}
                 >
-                  <Stack isInline align="center">
+                  <Stack direction="row" align="center">
                     <Box as={FaKey} color="blue.500" />
                     <Text>{cert.displayName}</Text>
                   </Stack>
-                  <Stack isInline align="center" justify="space-between">
+                  <Stack direction="row" align="center" justify="space-between">
                     <Button
                       variant="link"
                       size="sm"
-                      variantColor={cert.valid ? 'green' : 'red'}
+                      colorScheme={cert.valid ? 'green' : 'red'}
                       onClick={() => {
-                        ipcRenderer
-                          .invoke('toggle-cert-valid', cert.id)
+                        window.electronAPI
+                          .toggleCertValid(cert.id)
                           .then(results => setDevCerts(results));
                       }}
                     >
@@ -129,22 +127,23 @@ export default function DevMode({ isOpen, onClose }) {
                     <Button
                       variant="link"
                       size="sm"
-                      variantColor={cert.throwError ? 'red' : 'green'}
+                      colorScheme={cert.throwError ? 'red' : 'green'}
                       onClick={() => {
-                        ipcRenderer
-                          .invoke('toggle-cert-error', cert.id)
+                        window.electronAPI
+                          .toggleCertError(cert.id)
                           .then(results => setDevCerts(results));
                       }}
                     >
                       {cert.throwError ? 'com erro' : 'sem erro'}
                     </Button>
                     <IconButton
-                      icon={FaTrash}
-                      variantColor="red"
+                      icon={<FaTrash />}
+                      colorScheme="red"
                       size="sm"
+                      aria-label="Remover certificado"
                       onClick={() => {
-                        ipcRenderer
-                          .invoke('remove-cert', cert.id)
+                        window.electronAPI
+                          .removeCert(cert.id)
                           .then(results => setDevCerts(results));
                       }}
                     />
@@ -159,6 +158,6 @@ export default function DevMode({ isOpen, onClose }) {
   );
 }
 DevMode.propTypes = {
-  isOpen: PropTypes.boolean,
+  isOpen: PropTypes.bool,
   onClose: PropTypes.func
 };

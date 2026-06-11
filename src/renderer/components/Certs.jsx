@@ -13,7 +13,7 @@ import {
   ModalHeader,
   Stack,
   Text
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { FaKey } from 'react-icons/fa';
 
 export default function Certs({ isOpen, onClose, library, certs }) {

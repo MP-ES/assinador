@@ -17,19 +17,19 @@ files:
   - filter:
       - package.json
   - from: 'dist/main'
+  - from: 'dist/preload'
   - from: 'dist/renderer'
 extraResources:
   - from: static
     to: static
 extraMetadata:
-  main: main.js
+  main: main/main.js
 
 win:
   target:
     - target: nsis
       arch:
         - x64
-        - ia32
   icon: static/icon.ico
   extraResources:
     - from: './libs/windows'
@@ -43,6 +43,15 @@ nsis:
   perMachine: false
   deleteAppDataOnUninstall: true
   createDesktopShortcut: true
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: static/icon.png
+  category: public.app-category.utilities
 
 linux:
   target: rpm

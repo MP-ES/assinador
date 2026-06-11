@@ -7,10 +7,10 @@ import {
   Text,
   Flex,
   Button,
-  NumberInput
-} from '@chakra-ui/core';
+  NumberInput,
+  NumberInputField
+} from '@chakra-ui/react';
 import { FaRecycle, FaPlus, FaBug } from 'react-icons/fa';
-import { ipcRenderer, shell } from 'electron';
 
 import Token from './components/Token';
 import DevMode from './components/DevMode';
@@ -26,13 +26,13 @@ export default function Config() {
   const [openModal, setOpenModal] = React.useState(false);
 
   React.useEffect(() => {
-    ipcRenderer.invoke('get-version').then(results => setVersao(results));
+    window.electronAPI.getVersion().then(results => setVersao(results));
   }, []);
   React.useEffect(() => {
-    ipcRenderer.invoke('get-libs').then(results => setLibs(results));
+    window.electronAPI.getLibs().then(results => setLibs(results));
   }, []);
   React.useEffect(() => {
-    ipcRenderer.invoke('get-port').then(results => setPort(results));
+    window.electronAPI.getPort().then(results => setPort(results));
   }, []);
 
   return (
@@ -46,37 +46,40 @@ export default function Config() {
           right={2}
         >
           <Text mr={1}>versão</Text>
-          <Badge variantColor="green">{versao}</Badge>
+          <Badge colorScheme="green">{versao}</Badge>
         </Flex>
         <Heading as="h1">Assinador MPES</Heading>
-        <Stack align="center" isInline my={2}>
+        <Stack align="center" direction="row" my={2}>
           <Heading size="md">Endereço:</Heading>
           <Button
             variant="link"
             size="sm"
             onClick={() => {
-              event.preventDefault();
-              shell.openExternal(`http://localhost:${port}/health`);
+              window.electronAPI.openExternal(
+                `http://localhost:${port}/health`
+              );
             }}
           >
             {`http://localhost:${port}`}
           </Button>
         </Stack>
-        <Stack align="center" isInline my={2}>
+        <Stack align="center" direction="row" my={2}>
           <Heading size="md">Porta:</Heading>
           <NumberInput
             min={19333}
             max={19335}
-            onChange={value => setInputPort(value)}
+            onChange={(_, value) => setInputPort(value)}
             value={inputPort}
-          />
+          >
+            <NumberInputField />
+          </NumberInput>
           <Button
-            variantColor="blue"
+            colorScheme="blue"
             isLoading={restarting}
             onClick={() => {
               setRestart(true);
-              ipcRenderer
-                .invoke('set-port', inputPort)
+              window.electronAPI
+                .setPort(inputPort)
                 .then(results => setPort(results))
                 .finally(() => setRestart(false));
             }}
@@ -84,11 +87,10 @@ export default function Config() {
             Alterar
           </Button>
         </Stack>
-        <Stack isInline alignItems="center" my={2}>
+        <Stack direction="row" alignItems="center" my={2}>
           <Heading size="md">Modo teste:</Heading>
           <Button
-            leftIcon={FaBug}
-            variantColor="white"
+            leftIcon={<FaBug />}
             variant="outline"
             size="sm"
             w="14rem"
@@ -97,19 +99,18 @@ export default function Config() {
             Configurar
           </Button>
         </Stack>
-        <Stack isInline alignItems="center" my={2}>
+        <Stack direction="row" alignItems="center" my={2}>
           <Heading size="md">Bibliotecas:</Heading>
           <Button
-            leftIcon={FaRecycle}
-            variantColor="white"
+            leftIcon={<FaRecycle />}
             variant="outline"
             size="sm"
             w="14rem"
             isLoading={reloading}
             onClick={() => {
               setReload(true);
-              ipcRenderer
-                .invoke('reload-libs')
+              window.electronAPI
+                .reloadLibs()
                 .then(results => setLibs(results))
                 .finally(() => setReload(false));
             }}
@@ -122,16 +123,16 @@ export default function Config() {
             <Token key={lib} library={lib} setLibs={setLibs} />
           ))}
           <Button
-            leftIcon={FaPlus}
+            leftIcon={<FaPlus />}
             size="sm"
-            variantColor="green"
+            colorScheme="green"
             mt={2}
             mr="auto"
             isLoading={adding}
             onClick={() => {
               setAdd(true);
-              ipcRenderer
-                .invoke('add-lib')
+              window.electronAPI
+                .addLib()
                 .then(results => setLibs(results))
                 .finally(() => setAdd(false));
             }}

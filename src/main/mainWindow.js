@@ -1,5 +1,4 @@
 import { app, BrowserWindow, nativeImage } from 'electron';
-import { format as formatUrl } from 'url';
 import path from 'path';
 
 import platform from './models/platform';
@@ -8,15 +7,17 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const getIcon = (resize = false) => {
   if (platform.current === platform.options.windows)
-    return path.join(__static, 'icon.ico');
+    return path.join(__dirname, '../../static/icon.ico');
   else {
-    const image = nativeImage.createFromPath(path.join(__static, 'icon.png'));
+    const image = nativeImage.createFromPath(
+      path.join(__dirname, '../../static/icon.png')
+    );
     if (resize) return image.resize({ width: 16, height: 16 });
     return image;
   }
 };
 
-// global reference to mainWindow (necessary to prevent window from being garbage collected)
+// Referência global para evitar garbage collection da janela
 let mainWindow;
 
 function createMainWindow() {
@@ -28,25 +29,21 @@ function createMainWindow() {
     maximizable: false,
     resizable: false,
     show: false,
-    // skipTaskbar: true,
     title: 'Configurações',
     icon: getIcon(),
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, '../preload/index.js')
     }
   });
 
   if (isDevelopment) {
-    window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+    const url = process.env.ELECTRON_RENDERER_URL;
+    if (url) window.loadURL(url);
   } else {
     window.setMenu(null);
-    window.loadURL(
-      formatUrl({
-        pathname: path.join(__dirname, 'index.html'),
-        protocol: 'file',
-        slashes: true
-      })
-    );
+    window.loadFile(path.join(__dirname, '../renderer/index.html'));
   }
 
   window.on('close', event => {

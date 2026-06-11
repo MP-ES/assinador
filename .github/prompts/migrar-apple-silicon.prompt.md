@@ -1,7 +1,7 @@
 ---
-description: "Migração do Assinador MPES para compatibilidade com Apple Silicon. Atualiza Electron, Node.js, módulos nativos e configuração de build para gerar binários arm64/universal."
-agent: "agent"
-tools: ["search", "editFiles", "terminalLastCommand", "runInTerminal"]
+description: 'Migração do Assinador MPES para compatibilidade com Apple Silicon. Atualiza Electron, Node.js, módulos nativos e configuração de build para gerar binários arm64/universal.'
+agent: 'agent'
+tools: ['search', 'editFiles', 'terminalLastCommand', 'runInTerminal']
 ---
 
 # Migração Apple Silicon — Assinador MPES
@@ -107,12 +107,12 @@ Tornar o Assinador MPES compatível com Apple Silicon (arm64), mantendo suporte 
 
 ## Riscos e Dependências Externas
 
-| Risco | Mitigação |
-|---|---|
-| DYLIBs dos fabricantes de token sem versão arm64 | Documentar quais tokens funcionam; manter build x64 para fallback via Rosetta enquanto disponível |
-| Breaking changes no Electron quebrarem funcionalidades | Migrar em fases, testar cada fase antes de avançar |
-| `graphene-pk11` incompatível com Node.js 20+ | Avaliar fork ou substituição por `pkcs11js` direto |
-| Renderer quebrar com contextIsolation | Testar isoladamente na Fase 2 antes de mexer em build |
+| Risco                                                  | Mitigação                                                                                         |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| DYLIBs dos fabricantes de token sem versão arm64       | Documentar quais tokens funcionam; manter build x64 para fallback via Rosetta enquanto disponível |
+| Breaking changes no Electron quebrarem funcionalidades | Migrar em fases, testar cada fase antes de avançar                                                |
+| `graphene-pk11` incompatível com Node.js 20+           | Avaliar fork ou substituição por `pkcs11js` direto                                                |
+| Renderer quebrar com contextIsolation                  | Testar isoladamente na Fase 2 antes de mexer em build                                             |
 
 ---
 
