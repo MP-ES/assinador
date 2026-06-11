@@ -17,13 +17,16 @@ files:
   - filter:
       - package.json
   - from: 'dist/main'
+    to: 'main'
   - from: 'dist/preload'
+    to: 'preload'
   - from: 'dist/renderer'
+    to: 'renderer'
 extraResources:
   - from: static
     to: static
 extraMetadata:
-  main: main/main.js
+  main: main/index.js
 
 win:
   target:
@@ -52,6 +55,9 @@ mac:
         - arm64
   icon: static/icon.png
   category: public.app-category.utilities
+  extraResources:
+    - from: './libs/mac'
+      to: 'static/libs'
 
 linux:
   target: rpm
@@ -60,12 +66,4 @@ linux:
   packageCategory: Utility
   extraResources:
     - from: './libs/linux'
-      to: 'static/libs'
-
-mac:
-  category: Utilities
-  icon: static/icon.512.png
-  type: distribution
-  extraResources:
-    - from: './libs/mac'
       to: 'static/libs'

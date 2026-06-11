@@ -1,10 +1,11 @@
+import { app } from 'electron';
 import AutoLauncher from 'auto-launch';
 const autoLauncher = new AutoLauncher({
   name: 'Assinador MPES'
 });
 
 const start = () => {
-  if (process.env.NODE_ENV !== 'development') autoLauncher.enable();
+  if (app.isPackaged) autoLauncher.enable();
 };
 
 export default { start };

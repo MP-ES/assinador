@@ -3,7 +3,7 @@ import path from 'path';
 
 import platform from './models/platform';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = !app.isPackaged;
 
 const getIcon = (resize = false) => {
   if (platform.current === platform.options.windows)
@@ -41,6 +41,8 @@ function createMainWindow() {
   if (isDevelopment) {
     const url = process.env.ELECTRON_RENDERER_URL;
     if (url) window.loadURL(url);
+    window.webContents.openDevTools({ mode: 'detach' });
+    window.show();
   } else {
     window.setMenu(null);
     window.loadFile(path.join(__dirname, '../renderer/index.html'));
