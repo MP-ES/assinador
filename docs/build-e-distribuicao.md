@@ -8,9 +8,16 @@ macOS) e o `CLAUDE.md` (arquitetura).
 
 | Artefato | Plataforma de build | Cross-compila? |
 | --- | --- | --- |
-| Instalador Windows (NSIS `.exe`, x64) | Windows | — |
-| dmg macOS (x64 **e** arm64) | **Só macOS** | **Não** a partir de Windows/Linux |
+| Instalador Windows (NSIS `.exe`, x64 **e** ia32) | Windows | — |
+| dmg + zip macOS (x64 **e** arm64) | **Só macOS** | **Não** a partir de Windows/Linux |
 | RPM Linux | Linux (ou CI) | parcial |
+
+> O `mac` gera **dmg** (instalação manual) **e zip** (o `electron-updater` no
+> macOS atualiza a partir do zip, não do dmg). O `win` gera `x64` e `ia32` — o
+> ia32 era publicado até a v4.3.0. O RPM Linux está no `electron-builder.yml`
+> mas **nunca foi publicado** em release e **não** está na matrix do CI
+> (`main.yml`); trate-o como build local/manual, não como parte do fluxo de
+> release.
 
 O dmg do macOS **não pode** ser gerado no Windows: criação do DMG, assinatura,
 notarização e a recompilação do módulo nativo `pkcs11js` para `darwin-arm64`
@@ -35,8 +42,11 @@ Notas:
   fabricantes **não** são embarcadas. No Windows isso costuma funcionar porque o
   middleware do fabricante instala as DLLs no sistema (ex.: `system32\eTPKCS11.dll`)
   e `src/main/libManager/libraries.js` tem esses caminhos absolutos como fallback.
-- O build assina os binários com `signtool.exe` (certificado configurado na
-  máquina/CI).
+- **Assinatura Windows:** não há certificado de code signing configurado neste
+  repo nem secret no CI (`main.yml`). Como está, o `.exe` sai **não assinado** —
+  o SmartScreen/Defender pode alertar. Se houver um certificado de assinatura do
+  MPES, configurar via `CSC_LINK`/`CSC_KEY_PASSWORD` (o electron-builder chama o
+  `signtool.exe` automaticamente quando esses valores estão presentes).
 
 ### Validação pelo tester (token real)
 
@@ -56,9 +66,12 @@ Notas:
 
 ## macOS (a fazer quando houver um Mac)
 
-O `electron-builder.yml` já define `mac.target: dmg` com `arch: [x64, arm64]`,
-então o build gera **dois** dmg: `...-x64-mac.dmg` (Intel) e `...-arm64-mac.dmg`
-(Apple Silicon).
+O `electron-builder.yml` define `mac.target` com `dmg` **e** `zip`, ambos para
+`arch: [x64, arm64]`. O build gera dois dmg — `...-x64-mac.dmg` (Intel) e
+`...-arm64-mac.dmg` (Apple Silicon) — para instalação manual, mais os `.zip`
+correspondentes que o `electron-updater` consome no auto-update do mac. O ícone
+usa `static/icon.512.png` (512×512); o `static/icon.png` (300×300) **não** serve
+para o mac porque o electron-builder exige >=512 para gerar o `.icns`.
 
 ```bash
 # Em um Mac Apple Silicon:
@@ -100,7 +113,8 @@ O provider já aponta para `MP-ES/assinador` (`electron-builder.yml`). Para test
    escrita no repo. Alternativa: `--publish never` e depois criar a Release no
    GitHub manualmente, subindo os artefatos **e** os arquivos `latest.yml` (win) /
    `latest-mac.yml` (mac), gerados em `installer/`. Sem esses `.yml` o updater
-   **não** detecta a nova versão.
+   **não** detecta a nova versão. No mac, subir também o **`.zip`** (não só o
+   dmg): o `latest-mac.yml` referencia o zip e é dele que o auto-update baixa.
 3. Instalar a versão **antiga**, publicar a nova; o app checa no startup
    (`src/main/updater.js`, `updater.start()`).
 

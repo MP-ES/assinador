@@ -1,4 +1,6 @@
 samples.http
+HANDOFF.md
+installer.zip
 static/libs/**/*
 **/.cache/**/*
 **/installer
