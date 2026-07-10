@@ -70,6 +70,17 @@ retornar `{"version":"<versão>"}`. Para listar os certificados do token:
 
 ---
 
+## Para a equipe técnica
+
+- **Entender Rosetta, arquiteturas (Intel × Apple Silicon) e o token:**
+  [docs/diagnostico-apple-silicon.md](docs/diagnostico-apple-silicon.md#como-funciona-rosetta-arquiteturas-e-o-token-guia-do-técnico)
+  — o "porquê" por trás dos chamados de macOS.
+- **Passo a passo para instalar/atualizar no Mac Apple Silicon** (incluindo sair
+  da versão antiga e conferir se roda nativo): [Troubleshoot.md](Troubleshoot.md#macos-instalaratualizar-no-apple-silicon-m1m2m3m4).
+- **Build e publicação de releases:** [docs/build-e-distribuicao.md](docs/build-e-distribuicao.md).
+
+---
+
 ## Desenvolvimento
 
 Stack atual: **Electron 33 + electron-vite + React 18 + Node 22**. Não é mais
