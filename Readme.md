@@ -44,18 +44,18 @@ sobe um servidor local (`http://localhost:19333`) que o GAMPES consome no browse
   perto do relógio, não abre janela).
 - **macOS:** abra o `.dmg` e arraste o **Assinador MPES** para **Applications**.
 
-#### ⚠️ macOS: build não assinado (teste)
+#### macOS: liberar a primeira abertura
 
-As versões de teste **não** têm assinatura Apple (Developer ID), então o macOS
-bloqueia na primeira abertura ("app está danificado" / "desenvolvedor não
-verificado"). Para liberar, rode no Terminal:
+Na primeira vez, o macOS pede confirmação para abrir o app (como sempre foi com o
+Assinador). Clique com o **botão direito** no **Assinador MPES** em Applications →
+**Abrir** → **Abrir**.
+
+Se ainda assim o macOS disser que o app está danificado, rode no Terminal e abra
+de novo:
 
 ```bash
 xattr -dr com.apple.quarantine "/Applications/Assinador MPES.app"
 ```
-
-Ou clique com o **botão direito** no app → **Abrir** → **Abrir**. Isso é aceitável
-para teste; para distribuição ampla é preciso assinar/notarizar com Developer ID.
 
 ### 4. Conferir que subiu
 
