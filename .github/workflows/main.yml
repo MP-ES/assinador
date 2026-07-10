@@ -55,6 +55,7 @@ jobs:
             installer/*.zip
             installer/*.yml
             installer/*.blockmap
+            !installer/builder-debug.yml
           if-no-files-found: ignore
 
   # Só em tag (v*): junta os instaladores dos dois SOs e cria UMA release.
