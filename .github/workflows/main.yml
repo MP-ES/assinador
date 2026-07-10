@@ -14,6 +14,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      # Serializa os jobs: em publish (tag), o primeiro runner cria o rascunho da
+      # release e o segundo anexa nele. Em paralelo, ambos tentam criar a release
+      # ao mesmo tempo e o GitHub gera dois rascunhos com os assets divididos.
+      max-parallel: 1
       matrix:
         os:
           - macos-latest # Apple Silicon (arm64) — gera o dmg nativo, sem Rosetta
