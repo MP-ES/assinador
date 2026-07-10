@@ -14,10 +14,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      # Serializa os jobs: em publish (tag), o primeiro runner cria o rascunho da
-      # release e o segundo anexa nele. Em paralelo, ambos tentam criar a release
-      # ao mesmo tempo e o GitHub gera dois rascunhos com os assets divididos.
-      max-parallel: 1
       matrix:
         os:
           - macos-latest # Apple Silicon (arm64) — gera o dmg nativo, sem Rosetta
@@ -35,28 +31,61 @@ jobs:
       # (não é mais necessário windows-build-tools nem cross-env).
       - run: npm ci
 
-      # Em tag (v*): build + publish no GitHub Releases (alimenta o auto-updater).
-      # Em push/dispatch: build sem publicar (os artefatos são enviados abaixo).
+      # Sempre builda SEM publicar. A publicação da release é feita num job único
+      # (release) para evitar a corrida em que macOS e Windows criam rascunhos
+      # separados no GitHub (electron-builder não encontra o rascunho do outro job
+      # pela tag). O electron-builder gera também os latest*.yml do auto-updater
+      # em installer/ mesmo com --publish never.
+      #
+      # Assinatura/notarização macOS: quando houver Developer ID, adicionar um
+      # bloco `env:` aqui com CSC_LINK, CSC_KEY_PASSWORD, APPLE_ID,
+      # APPLE_APP_SPECIFIC_PASSWORD e APPLE_TEAM_ID (via secrets).
       - name: Build e empacotar
-        run: npm run build && npx electron-builder --publish ${{ startsWith(github.ref, 'refs/tags/') && 'always' || 'never' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Assinatura/notarização macOS — preencher quando houver Developer ID:
-          # CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
-          # CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: npm run build && npx electron-builder --publish never
 
-      # Em builds que não são de tag, disponibiliza os instaladores para download
-      # (permite baixar o dmg/exe para testar sem precisar publicar uma release).
-      - name: Publicar artefatos do build
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      # Instaladores + metadados de update ficam disponíveis para o job de release
+      # e também para download direto (testar sem publicar release).
+      - name: Subir instaladores como artifact
         uses: actions/upload-artifact@v4
         with:
-          name: assinador-${{ matrix.os }}
+          name: instaladores-${{ matrix.os }}
           path: |
             installer/*.exe
             installer/*.dmg
+            installer/*.zip
             installer/*.yml
+            installer/*.blockmap
           if-no-files-found: ignore
+
+  # Só em tag (v*): junta os instaladores dos dois SOs e cria UMA release.
+  # prerelease é ligado automaticamente quando a tag tem sufixo (ex.: v5.0.0-beta).
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Baixar instaladores dos dois SOs
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: instaladores-*
+          merge-multiple: true
+
+      - name: Criar/atualizar a release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${{ github.ref_name }}"
+          prerelease=""
+          case "$tag" in *-*) prerelease="--prerelease";; esac
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/* --repo "${{ github.repository }}" --clobber
+          else
+            gh release create "$tag" dist/* \
+              --repo "${{ github.repository }}" \
+              --title "$tag" \
+              --generate-notes \
+              $prerelease
+          fi
