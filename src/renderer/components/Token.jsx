@@ -7,10 +7,9 @@ import {
   Text,
   useClipboard,
   useToast
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { FaTrash, FaList } from 'react-icons/fa';
 import { MdSettings } from 'react-icons/md';
-import { ipcRenderer } from 'electron';
 
 import Certs from './Certs';
 
@@ -35,7 +34,14 @@ export default function Token({ library, setLibs }) {
 
   return (
     <>
-      <Stack isInline align="center" shadow="md" p={2} mb={1} borderWidth="1px">
+      <Stack
+        direction="row"
+        align="center"
+        shadow="md"
+        p={2}
+        mb={1}
+        borderWidth="1px"
+      >
         <Box
           as={MdSettings}
           color="green.500"
@@ -45,24 +51,26 @@ export default function Token({ library, setLibs }) {
         />
         <Text isTruncated>{library}</Text>
         <IconButton
-          icon={FaList}
+          icon={<FaList />}
           variant="ghost"
           color="green.500"
           ml="auto"
+          aria-label="Listar certificados"
           onClick={() =>
-            ipcRenderer.invoke('get-certificates', library).then(results => {
+            window.electronAPI.getCertificates(library).then(results => {
               setCerts(results);
               setOpenModal(true);
             })
           }
         />
         <IconButton
-          icon={FaTrash}
+          icon={<FaTrash />}
           variant="ghost"
           color="red.500"
+          aria-label="Remover biblioteca"
           onClick={() => {
-            ipcRenderer
-              .invoke('remove-lib', library)
+            window.electronAPI
+              .removeLib(library)
               .then(results => setLibs(results));
           }}
         />

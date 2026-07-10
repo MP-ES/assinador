@@ -9,9 +9,11 @@ let tray = null;
 
 const getIcon = (resize = false) => {
   if (platform.current === platform.options.windows)
-    return path.join(__static, 'icon.ico');
+    return path.join(__dirname, '../../static/icon.ico');
   else {
-    const image = nativeImage.createFromPath(path.join(__static, 'icon.png'));
+    const image = nativeImage.createFromPath(
+      path.join(__dirname, '../../static/icon.png')
+    );
     if (resize) return image.resize({ width: 16, height: 16 });
     return image;
   }

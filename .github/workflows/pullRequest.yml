@@ -4,17 +4,22 @@ on:
   pull_request:
     branches:
       - main
-  # Allows you to run this workflow manually from the Actions tab
+  # Permite rodar manualmente pela aba Actions
   workflow_dispatch:
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.4.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
-          cache: 'npm'
-      - run: npm install --global cross-env && npm install
+          node-version: 22
+          cache: npm
+
+      # --ignore-scripts pula o postinstall (recompilação nativa do pkcs11js):
+      # lint e build do bundle não precisam do módulo nativo (graphene-pk11 e
+      # pkcs11js são marcados como external no build do main).
+      - run: npm ci --ignore-scripts
       - run: npm run lint
+      - run: npm run build

@@ -40,13 +40,14 @@ ipcMain.handle('set-port', async (_event, port) => setPort(port));
 ipcMain.handle('set-dev-mode', async (_event, devMode) => setDevMode(devMode));
 
 ipcMain.handle('add-lib', async () => {
-  const [result] = dialog.showOpenDialogSync(null, {
+  const result = dialog.showOpenDialogSync({
     title: 'Escolha a nova biblioteca',
     filters: fileFilter,
     properties: ['openFile'],
     buttonLabel: 'Selecionar'
   });
-  return libManager.addLib(result);
+  if (!result || result.length === 0) return config.libs;
+  return libManager.addLib(result[0]);
 });
 
 ipcMain.handle('remove-lib', async (_event, lib) => libManager.removeLib(lib));

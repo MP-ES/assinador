@@ -17,12 +17,16 @@ files:
   - filter:
       - package.json
   - from: 'dist/main'
+    to: 'main'
+  - from: 'dist/preload'
+    to: 'preload'
   - from: 'dist/renderer'
+    to: 'renderer'
 extraResources:
   - from: static
     to: static
 extraMetadata:
-  main: main.js
+  main: main/index.js
 
 win:
   target:
@@ -44,6 +48,27 @@ nsis:
   deleteAppDataOnUninstall: true
   createDesktopShortcut: true
 
+mac:
+  target:
+    # dmg: instalador que o usuário baixa e arrasta para Applications.
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    # zip: exigido pelo electron-updater no macOS (o auto-update no mac usa o
+    # zip, não o dmg). As releases até a v4.3.0 já publicavam o -x64-mac.zip.
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  # icon.512.png tem 512x512; o electron-builder exige >=512 para gerar o .icns
+  # do mac. static/icon.png tem 300x300 e quebra o build mac.
+  icon: static/icon.512.png
+  category: public.app-category.utilities
+  extraResources:
+    - from: './libs/mac'
+      to: 'static/libs'
+
 linux:
   target: rpm
   icon: static/icon.png
@@ -51,12 +76,4 @@ linux:
   packageCategory: Utility
   extraResources:
     - from: './libs/linux'
-      to: 'static/libs'
-
-mac:
-  category: Utilities
-  icon: static/icon.512.png
-  type: distribution
-  extraResources:
-    - from: './libs/mac'
       to: 'static/libs'
