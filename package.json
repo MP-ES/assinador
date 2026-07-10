@@ -1,6 +1,6 @@
 {
   "name": "assinador",
-  "version": "5.0.0",
+  "version": "5.0.0-beta",
   "description": "Assinador de Documentos do MPES",
   "main": "dist/main/index.js",
   "author": {
